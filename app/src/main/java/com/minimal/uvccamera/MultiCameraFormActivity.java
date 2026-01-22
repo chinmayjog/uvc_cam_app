@@ -440,18 +440,88 @@ public class MultiCameraFormActivity extends AppCompatActivity implements Surfac
                 picturesDir.mkdirs();
             }
             
-            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss_SSS", Locale.US).format(new Date());
-            File frameFile = new File(picturesDir, "frame_camera_" + currentCameraIndex + "_" + timestamp + ".yuv");
+            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+            File photoFile = new File(picturesDir, "camera_" + currentCameraIndex + "_" + timestamp + ".jpg");
             
-            FileOutputStream fos = new FileOutputStream(frameFile);
-            fos.write(frameData);
-            fos.close();
-            
-            Log.d(TAG, "Frame data saved: " + frameFile.getAbsolutePath());
+            // Convert YUY2 frame to JPEG
+            Bitmap bitmap = convertYuy2ToBitmap(frameData, imageWidth, imageHeight);
+            if (bitmap != null) {
+                FileOutputStream fos = new FileOutputStream(photoFile);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+                fos.close();
+                
+                Log.d(TAG, "Photo saved: " + photoFile.getAbsolutePath());
+                
+                // Update camera capture with photo path
+                CameraCapture capture = cameraCaptureList.get(currentCameraIndex);
+                capture.setPhotoPath(photoFile.getAbsolutePath());
+                capture.setCaptureTimestamp(System.currentTimeMillis());
+                
+                // Display captured photo on UI thread
+                final Bitmap displayBitmap = bitmap;
+                mainHandler.post(() -> {
+                    displayCapturedPhoto(photoFile.getAbsolutePath());
+                    photoCaptureddForCurrentCamera = true;
+                    statusText.setText("Photo captured - tap Hide Preview to close");
+                    Toast.makeText(this, "Photo captured!", Toast.LENGTH_SHORT).show();
+                });
+            } else {
+                Log.e(TAG, "Failed to convert frame to bitmap");
+                mainHandler.post(() -> {
+                    Toast.makeText(this, "Error capturing photo", Toast.LENGTH_SHORT).show();
+                });
+            }
             
         } catch (Exception e) {
             Log.e(TAG, "Error saving frame data", e);
+            mainHandler.post(() -> {
+                Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
         }
+    }
+    
+    private Bitmap convertYuy2ToBitmap(byte[] yuy2Data, int width, int height) {
+        try {
+            // YUY2 format: Each pixel is 2 bytes (Y1 U Y2 V pattern)
+            int[] rgb = new int[width * height];
+            
+            for (int i = 0, j = 0; i < yuy2Data.length && j < rgb.length; i += 4, j += 2) {
+                int y1 = yuy2Data[i] & 0xff;
+                int u = yuy2Data[i + 1] & 0xff;
+                int y2 = yuy2Data[i + 2] & 0xff;
+                int v = yuy2Data[i + 3] & 0xff;
+                
+                // Convert to RGB
+                rgb[j] = yuv2rgb(y1, u, v);
+                if (j + 1 < rgb.length) {
+                    rgb[j + 1] = yuv2rgb(y2, u, v);
+                }
+            }
+            
+            return Bitmap.createBitmap(rgb, width, height, Bitmap.Config.ARGB_8888);
+        } catch (Exception e) {
+            Log.e(TAG, "Error converting YUY2 to bitmap", e);
+            return null;
+        }
+    }
+    
+    private int yuv2rgb(int y, int u, int v) {
+        // Adjust for color space
+        y = y - 16;
+        u = u - 128;
+        v = v - 128;
+        
+        // Convert using standard formulas
+        int r = (int)(1.164 * y + 1.596 * v);
+        int g = (int)(1.164 * y - 0.391 * u - 0.813 * v);
+        int b = (int)(1.164 * y + 2.018 * u);
+        
+        // Clamp values
+        r = Math.max(0, Math.min(255, r));
+        g = Math.max(0, Math.min(255, g));
+        b = Math.max(0, Math.min(255, b));
+        
+        return 0xFF000000 | (r << 16) | (g << 8) | b;
     }
     
     private void stopStreaming() {
@@ -514,29 +584,30 @@ public class MultiCameraFormActivity extends AppCompatActivity implements Surfac
             return;
         }
         
+        // If not streaming, need to start preview first
+        if (!isStreaming) {
+            Toast.makeText(this, "Please show preview first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
         captureButton.setEnabled(false);
-        Toast.makeText(this, "Photo captured!", Toast.LENGTH_SHORT).show();
+        statusText.setText("Capturing...");
         
-        // In a real implementation, you would:
-        // 1. Capture frame from preview
-        // 2. Save to file
-        // 3. Store file path in cameraCaptureList
+        // Trigger frame capture via callback
+        capturePicture = true;
         
-        CameraCapture capture = cameraCaptureList.get(currentCameraIndex);
-        String photoPath = saveTestPhoto(currentCameraIndex);
-        capture.setPhotoPath(photoPath);
-        capture.setCaptureTimestamp(System.currentTimeMillis());
+        // Try to call native capture method if available
+        try {
+            int result = uvcCamera.PreviewCapturePicture(mNativePtr);
+            Log.d(TAG, "PreviewCapturePicture called, result: " + result);
+        } catch (Exception e) {
+            Log.e(TAG, "Error calling PreviewCapturePicture", e);
+        }
         
-        // Display captured photo
-        displayCapturedPhoto(photoPath);
-        
-        // Mark that photo has been captured for current camera
-        photoCaptureddForCurrentCamera = true;
-        statusText.setText("Photo captured - tap Hide Preview to close");
-        
+        // Re-enable button after delay
         mainHandler.postDelayed(() -> {
             captureButton.setEnabled(true);
-        }, 500);
+        }, 1000);
     }
     
     private void displayCapturedPhoto(String photoPath) {
