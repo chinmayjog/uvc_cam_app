@@ -1,5 +1,6 @@
 package com.minimal.uvccamera;
 
+import android.util.Log;
 import android.view.Surface;
 
 /**
@@ -8,12 +9,15 @@ import android.view.Surface;
 public class UVCCamera {
     
     static {
-        System.loadLibrary("usb1.0");
-        System.loadLibrary("jpeg9");
-        System.loadLibrary("yuv");
-        System.loadLibrary("uvc");
-        System.loadLibrary("uvc_preview");
-        System.loadLibrary("Uvc_Support");
+        String[] libs = {"usb1.0", "jpeg9", "yuv", "uvc", "uvc_preview", "Uvc_Support"};
+        for (String lib : libs) {
+            try {
+                System.loadLibrary(lib);
+                Log.d("UVCCamera", "Loaded library: " + lib);
+            } catch (UnsatisfiedLinkError e) {
+                Log.e("UVCCamera", "Failed to load library: " + lib, e);
+            }
+        }
     }
     
     // Native camera pointer

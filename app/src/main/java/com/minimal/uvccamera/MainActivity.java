@@ -32,12 +32,15 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity {
     
     static {
-        System.loadLibrary("usb1.0");
-        System.loadLibrary("jpeg9");
-        System.loadLibrary("yuv");
-        System.loadLibrary("uvc");
-        System.loadLibrary("uvc_preview");
-        System.loadLibrary("Uvc_Support");
+        String[] libs = {"usb1.0", "jpeg9", "yuv", "uvc", "uvc_preview", "Uvc_Support"};
+        for (String lib : libs) {
+            try {
+                System.loadLibrary(lib);
+                Log.d("MinimalUVC", "Loaded library: " + lib);
+            } catch (UnsatisfiedLinkError e) {
+                Log.e("MinimalUVC", "Failed to load library: " + lib, e);
+            }
+        }
     }
     
     // Native camera pointer
@@ -290,31 +293,55 @@ public class MainActivity extends AppCompatActivity {
                     // This matches the reference app architecture
                     
                     // Try multiple format options with fallbacks
-                    // Priority: MJPEG (compressed) > YUY2 (uncompressed) > NV12/I420
+                    // Priority: Common supported formats first, then higher resolutions
                     boolean formatConfigured = false;
                     
-                    // First try: MJPEG at 640x480
+                    // First try: MJPEG at 640x480 (VGA - most commonly supported)
                     if (tryConfigureFormat("MJPEG", 640, 480, 1, 1)) {
                         formatConfigured = true;
-                        Log.d(TAG, "Successfully configured MJPEG format");
+                        Log.d(TAG, "Successfully configured 640x480 MJPEG format");
                     }
                     
-                    // Second try: YUY2 (YUV 4:2:2 uncompressed) at 640x480
+                    // Second try: MJPEG at 800x600
+                    if (!formatConfigured && tryConfigureFormat("MJPEG", 800, 600, 1, 1)) {
+                        formatConfigured = true;
+                        Log.d(TAG, "Successfully configured 800x600 MJPEG format");
+                    }
+                    
+                    // Third try: MJPEG at 1280x720 (HD)
+                    if (!formatConfigured && tryConfigureFormat("MJPEG", 1280, 720, 1, 1)) {
+                        formatConfigured = true;
+                        Log.d(TAG, "Successfully configured 720p MJPEG format");
+                    }
+                    
+                    // Fourth try: MJPEG at 1920x1080 (Full HD)
+                    if (!formatConfigured && tryConfigureFormat("MJPEG", 1920, 1080, 1, 1)) {
+                        formatConfigured = true;
+                        Log.d(TAG, "Successfully configured 1080p MJPEG format");
+                    }
+                    
+                    // Fifth try: YUY2 (YUV 4:2:2 uncompressed) at 640x480
                     if (!formatConfigured && tryConfigureFormat("YUY2", 640, 480, 1, 1)) {
                         formatConfigured = true;
-                        Log.d(TAG, "MJPEG not supported, using YUY2 format");
+                        Log.d(TAG, "MJPEG not supported, using 640x480 YUY2 format");
                     }
                     
-                    // Third try: Lower resolution MJPEG (320x240)
+                    // Sixth try: YUY2 at 800x600
+                    if (!formatConfigured && tryConfigureFormat("YUY2", 800, 600, 1, 1)) {
+                        formatConfigured = true;
+                        Log.d(TAG, "Using 800x600 YUY2 format");
+                    }
+                    
+                    // Seventh try: Lower resolution MJPEG (320x240)
                     if (!formatConfigured && tryConfigureFormat("MJPEG", 320, 240, 1, 1)) {
                         formatConfigured = true;
-                        Log.d(TAG, "Using lower resolution MJPEG (320x240)");
+                        Log.d(TAG, "Using lower resolution 320x240 MJPEG");
                     }
                     
-                    // Fourth try: Lower resolution YUY2
+                    // Eighth try: Lower resolution YUY2
                     if (!formatConfigured && tryConfigureFormat("YUY2", 320, 240, 1, 1)) {
                         formatConfigured = true;
-                        Log.d(TAG, "Using lower resolution YUY2 (320x240)");
+                        Log.d(TAG, "Using lower resolution 320x240 YUY2");
                     }
                     
                     // Fallback: Use MJPEG defaults anyway and let native code handle errors
@@ -437,19 +464,23 @@ public class MainActivity extends AppCompatActivity {
     
     private int calculateYuy2PacketSize(int width, int height) {
         // YUY2 is 16 bits per pixel (2 bytes)
-        // For streaming, use smaller chunks
+        // For streaming, use appropriate chunk sizes for bandwidth
         int bytesPerFrame = width * height * 2;
         int fps = 15;
         int bytesPerSecond = bytesPerFrame * fps;
         
         // Use appropriate packet size - typical USB 2.0 high-speed max is 3072
-        // For YUY2, we may need larger alt settings
+        // Scale based on resolution
         if (width <= 320) {
             return 1024;
         } else if (width <= 640) {
             return 2048;
-        } else {
+        } else if (width <= 800) {
             return 3072;
+        } else if (width <= 1280) {
+            return 3072; // Still 3072 - USB 2.0 max single packet
+        } else {
+            return 3072; // Maximum USB 2.0 high-speed packet size
         }
     }
     
@@ -464,7 +495,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (requiredPacketSize <= 2048) {
             return 4;
         } else {
-            return 6; // Maximum bandwidth
+            return 6; // Maximum bandwidth for USB 2.0 high-speed
         }
     }
     

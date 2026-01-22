@@ -132,6 +132,8 @@ public class CameraActivity extends AppCompatActivity {
             @Override
             public void surfaceCreated(@NonNull SurfaceHolder holder) {
                 Log.d(TAG, "Surface created");
+                // Adjust surface view size to match camera resolution
+                adjustSurfaceViewSize();
                 initCamera();
             }
             
@@ -207,35 +209,57 @@ public class CameraActivity extends AppCompatActivity {
                 
                 // Start preview using JNI
                 Surface surface = surfaceView.getHolder().getSurface();
+                if (surface == null || !surface.isValid()) {
+                    Log.e(TAG, "Surface is null or invalid!");
+                    mainHandler.post(() -> {
+                        Toast.makeText(this, "Surface error", Toast.LENGTH_SHORT).show();
+                        finish();
+                    });
+                    return;
+                }
+                Log.d(TAG, "Surface valid: " + surface.isValid());
                 
                 // Create frame callback
                 UVCCamera.IFrameCallback frameCallback = frameData -> {
-                    Log.d(TAG, "Frame received: " + frameData.length + " bytes");
+                    Log.d(TAG, "Frame received: " + frameData.length + " bytes, expected: " + (imageWidth * imageHeight * 2) + " for YUY2");
                     if (capturePicture) {
                         capturePicture = false;
+                        Log.d(TAG, "Capture triggered, saving frame");
                         saveFrame(frameData);
                     }
                 };
                 
-                int result = uvcCamera.PreviewPrepareStream(mNativePtr, surface, frameCallback);
-                Log.d(TAG, "PreviewPrepareStream result: " + result);
+                Log.d(TAG, "Calling PreviewPrepareStream with resolution: " + imageWidth + "x" + imageHeight + 
+                      ", format: " + videoFormat + ", surface valid: " + surface.isValid());
                 
-                if (result == 0) {
-                    result = uvcCamera.PreviewStartStream(mNativePtr);
-                    Log.d(TAG, "PreviewStartStream result: " + result);
+                int prepareResult = uvcCamera.PreviewPrepareStream(mNativePtr, surface, frameCallback);
+                Log.d(TAG, "PreviewPrepareStream result: " + prepareResult);
+                
+                if (prepareResult == 0) {
+                    Log.d(TAG, "Calling PreviewStartStream");
+                    int startResult = uvcCamera.PreviewStartStream(mNativePtr);
+                    Log.d(TAG, "PreviewStartStream result: " + startResult);
                     
-                    if (result == 0) {
+                    if (startResult == 0) {
                         isStreaming = true;
-                        mainHandler.post(() -> statusText.setText("Streaming..."));
-                    } else {
                         mainHandler.post(() -> {
-                            Toast.makeText(this, "Failed to start streaming", Toast.LENGTH_SHORT).show();
+                            statusText.setText("Streaming...");
+                            Log.d(TAG, "UI updated to streaming");
+                        });
+                        Log.d(TAG, "Streaming started successfully");
+                    } else {
+                        final int errorCode = startResult;
+                        Log.e(TAG, "PreviewStartStream failed with result: " + errorCode);
+                        mainHandler.post(() -> {
+                            Toast.makeText(this, "Failed to start streaming (error: " + errorCode + ")", Toast.LENGTH_SHORT).show();
                             finish();
                         });
                     }
                 } else {
+                    final int errorCode = prepareResult;
+                    Log.e(TAG, "PreviewPrepareStream failed with result: " + errorCode);
                     mainHandler.post(() -> {
-                        Toast.makeText(this, "Failed to prepare streaming", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Failed to prepare streaming (error: " + errorCode + ")", Toast.LENGTH_SHORT).show();
                         finish();
                     });
                 }
@@ -266,18 +290,79 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
     
+    /**
+     * Adjust the SurfaceView size to match camera resolution aspect ratio
+     * while fitting within the display bounds
+     */
+    private void adjustSurfaceViewSize() {
+        try {
+            // Get display metrics
+            android.view.Display display = getWindowManager().getDefaultDisplay();
+            android.graphics.Point displaySize = new android.graphics.Point();
+            display.getSize(displaySize);
+            
+            int displayWidth = displaySize.x;
+            int displayHeight = displaySize.y;
+            
+            Log.d(TAG, "Display size: " + displayWidth + "x" + displayHeight);
+            Log.d(TAG, "Camera resolution: " + imageWidth + "x" + imageHeight);
+            
+            // Calculate aspect ratio
+            float cameraAspect = (float) imageWidth / imageHeight;
+            float displayAspect = (float) displayWidth / displayHeight;
+            
+            int surfaceWidth, surfaceHeight;
+            
+            if (cameraAspect > displayAspect) {
+                // Camera is wider - fit to display width
+                surfaceWidth = displayWidth;
+                surfaceHeight = Math.round(displayWidth / cameraAspect);
+            } else {
+                // Camera is taller - fit to display height
+                surfaceHeight = displayHeight;
+                surfaceWidth = Math.round(displayHeight * cameraAspect);
+            }
+            
+            Log.d(TAG, "Adjusting surface view to: " + surfaceWidth + "x" + surfaceHeight);
+            
+            // Update SurfaceView layout parameters
+            android.view.ViewGroup.LayoutParams params = surfaceView.getLayoutParams();
+            params.width = surfaceWidth;
+            params.height = surfaceHeight;
+            surfaceView.setLayoutParams(params);
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Error adjusting surface view size", e);
+        }
+    }
+    
     private void saveFrame(byte[] frameData) {
         new Thread(() -> {
             try {
+                Log.d(TAG, "saveFrame() called with " + frameData.length + " bytes, format=" + videoFormat);
                 Bitmap bitmap = null;
                 
-                // Try to decode as JPEG first
-                bitmap = BitmapFactory.decodeByteArray(frameData, 0, frameData.length);
+                // Check expected frame sizes
+                int yuy2Size = imageWidth * imageHeight * 2;
+                int mjpegMinSize = 1000; // JPEG files are typically at least 1KB
                 
-                // If JPEG decoding fails, try YUY2 format conversion
-                if (bitmap == null && videoFormat.equals("YUY2")) {
-                    Log.d(TAG, "Decoding YUY2 format, frame size: " + frameData.length);
+                Log.d(TAG, "Frame analysis: size=" + frameData.length + ", YUY2 expected=" + yuy2Size + ", is JPEG likely=" + (frameData.length > mjpegMinSize && frameData[0] == (byte)0xFF && frameData[1] == (byte)0xD8));
+                
+                // Try to decode as JPEG first (if frame looks like JPEG)
+                if (frameData.length > mjpegMinSize && frameData[0] == (byte)0xFF && frameData[1] == (byte)0xD8) {
+                    Log.d(TAG, "Attempting JPEG decode");
+                    bitmap = BitmapFactory.decodeByteArray(frameData, 0, frameData.length);
+                }
+                
+                // If JPEG decoding fails or frame is YUY2, try YUY2 conversion
+                if (bitmap == null && (videoFormat.equals("YUY2") || frameData.length == yuy2Size)) {
+                    Log.d(TAG, "Decoding as YUY2 format, frame size: " + frameData.length);
                     bitmap = decodeYUY2(frameData, imageWidth, imageHeight);
+                    if (bitmap != null) {
+                        Log.d(TAG, "YUY2 decode successful: " + bitmap.getWidth() + "x" + bitmap.getHeight());
+                    } else {
+                        Log.e(TAG, "YUY2 decode failed");
+                    }
                 }
                 
                 if (bitmap != null) {
@@ -303,8 +388,9 @@ public class CameraActivity extends AppCompatActivity {
                     Log.d(TAG, "Picture saved: " + path);
                     bitmap.recycle();
                 } else {
+                    Log.e(TAG, "Failed to decode frame: format=" + videoFormat + ", size=" + frameData.length);
                     mainHandler.post(() ->
-                        Toast.makeText(this, "Failed to decode frame (format: " + videoFormat + ")", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Failed to decode frame (format: " + videoFormat + ", size: " + frameData.length + ")", Toast.LENGTH_SHORT).show()
                     );
                 }
                 
