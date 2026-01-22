@@ -24,15 +24,33 @@
         android:textSize="14sp"
         android:visibility="gone" />
 
-    <Button
-        android:id="@+id/startButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="@string/start_preview"
-        android:textSize="18sp"
-        android:enabled="false"
-        android:minWidth="200dp"
-        android:minHeight="60dp" />
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/startButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/start_preview"
+            android:textSize="18sp"
+            android:enabled="false"
+            android:minWidth="200dp"
+            android:minHeight="60dp"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/multiCameraButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📸 Start Multi-Camera Form"
+            android:textSize="16sp"
+            android:enabled="false"
+            android:minWidth="200dp"
+            android:minHeight="50dp" />
+    </LinearLayout>
 
 </RelativeLayout>

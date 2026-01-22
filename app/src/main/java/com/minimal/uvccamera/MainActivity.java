@@ -178,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
         statusText = findViewById(R.id.statusText);
         cameraInfoText = findViewById(R.id.cameraInfoText);
         startButton = findViewById(R.id.startButton);
+        Button multiCameraButton = findViewById(R.id.multiCameraButton);
         
         startButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, CameraActivity.class);
@@ -192,6 +193,11 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("videoFormat", videoFormat);
             intent.putExtra("deviceName", cameraDevice.getDeviceName());
             intent.putExtra("mNativePtr", mNativePtr);  // Pass native pointer
+            startActivity(intent);
+        });
+        
+        multiCameraButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, MultiCameraFormActivity.class);
             startActivity(intent);
         });
         
@@ -210,9 +216,10 @@ public class MainActivity extends AppCompatActivity {
         // Request runtime permissions for camera and storage
         requestRequiredPermissions();
         
-        // Delay findCamera() to allow system to stabilize before requesting USB permission
-        // This prevents permission denial on first launch with pre-connected camera
-        mainHandler.postDelayed(this::findCamera, 1000);
+        // Auto-launch MultiCameraFormActivity for multi-camera setup
+        Intent intent = new Intent(MainActivity.this, MultiCameraFormActivity.class);
+        startActivity(intent);
+        finish();
     }
     
     @Override
@@ -478,6 +485,7 @@ public class MainActivity extends AppCompatActivity {
                                      "Format: " + videoFormat;
                         cameraInfoText.setText(info);
                         startButton.setEnabled(true);
+                        findViewById(R.id.multiCameraButton).setEnabled(true);
                     });
                     
                 } catch (Exception e) {
@@ -795,6 +803,7 @@ public class MainActivity extends AppCompatActivity {
                         cameraInfoText.setText(info);
                         cameraInfoText.setVisibility(android.view.View.VISIBLE);
                         startButton.setEnabled(true);
+                        findViewById(R.id.multiCameraButton).setEnabled(true);
                     });
                     Log.d(TAG, "Configuration committed successfully");
                 } else {
