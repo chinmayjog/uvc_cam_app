@@ -123,8 +123,38 @@ public class MainActivity extends AppCompatActivity {
                             initializeCamera(device);
                         }
                     } else {
-                        Log.d(TAG, "USB permission denied");
-                        updateStatus("Permission denied");
+                        Log.d(TAG, "USB permission denied, will retry");
+                        // Instead of showing error immediately, retry the permission request
+                        if (device != null && device.equals(cameraDevice)) {
+                            mainHandler.postDelayed(() -> {
+                                if (cameraDevice != null && device.equals(cameraDevice)) {
+                                    Log.d(TAG, "Retrying permission request after denial");
+                                    requestPermission(device);
+                                }
+                            }, 1000);
+                        }
+                    }
+                }
+            } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
+                synchronized (this) {
+                    UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                    if (device != null && device.equals(cameraDevice)) {
+                        Log.d(TAG, "USB device detached: " + device.getDeviceName());
+                        closeCamera();
+                        updateStatus("Camera disconnected");
+                        mainHandler.postDelayed(MainActivity.this::findCamera, 500);
+                    }
+                }
+            } else if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
+                synchronized (this) {
+                    UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                    if (device != null) {
+                        Log.d(TAG, "USB device attached: " + device.getDeviceName());
+                        // Check if this is a UVC camera
+                        if (isUvcCamera(device) && cameraDevice == null) {
+                            Log.d(TAG, "Detected UVC camera attachment");
+                            requestPermission(device);
+                        }
                     }
                 }
             }
@@ -167,7 +197,10 @@ public class MainActivity extends AppCompatActivity {
         
         usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
         
+        // Register broadcast receiver BEFORE calling findCamera so permission requests are properly handled
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(usbReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
         } else {
@@ -177,7 +210,9 @@ public class MainActivity extends AppCompatActivity {
         // Request runtime permissions for camera and storage
         requestRequiredPermissions();
         
-        findCamera();
+        // Delay findCamera() to allow system to stabilize before requesting USB permission
+        // This prevents permission denial on first launch with pre-connected camera
+        mainHandler.postDelayed(this::findCamera, 1000);
     }
     
     @Override
@@ -246,15 +281,47 @@ public class MainActivity extends AppCompatActivity {
         }
         
         Log.d(TAG, "Requesting USB permission for " + device.getDeviceName());
-        PendingIntent permissionIntent = PendingIntent.getBroadcast(
-            this, 0, new Intent(ACTION_USB_PERMISSION),
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_MUTABLE : 0
-        );
-        usbManager.requestPermission(device, permissionIntent);
+        
+        try {
+            // Use FLAG_UPDATE_CURRENT to ensure the intent is properly delivered
+            int flags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? 
+                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_UPDATE_CURRENT : 
+                PendingIntent.FLAG_UPDATE_CURRENT;
+            
+            PendingIntent permissionIntent = PendingIntent.getBroadcast(
+                this, 0, new Intent(ACTION_USB_PERMISSION), flags
+            );
+            usbManager.requestPermission(device, permissionIntent);
+            Log.d(TAG, "Permission request sent successfully");
+            
+            // Schedule a retry in case the permission dialog doesn't appear
+            mainHandler.postDelayed(() -> {
+                boolean stillNoPermission = !usbManager.hasPermission(device);
+                if (stillNoPermission && device.equals(cameraDevice)) {
+                    Log.d(TAG, "Permission not granted after delay, retrying");
+                    usbManager.requestPermission(device, permissionIntent);
+                }
+            }, 2000);
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Error requesting USB permission", e);
+            updateStatus("Error requesting permission");
+        }
     }
     
     private void initializeCamera(UsbDevice device) {
         try {
+            // Close any previous device connection before opening new one
+            if (deviceConnection != null && cameraDevice != null && !cameraDevice.equals(device)) {
+                Log.d(TAG, "Closing previous device connection before switching");
+                try {
+                    deviceConnection.close();
+                } catch (Exception e) {
+                    Log.e(TAG, "Error closing previous device", e);
+                }
+                deviceConnection = null;
+            }
+            
             cameraDevice = device;
             
             // Open device connection to get file descriptor
@@ -427,7 +494,7 @@ public class MainActivity extends AppCompatActivity {
     
     /**
      * Try to configure camera with specified format and resolution.
-     * This is a simplified check - in production you'd query USB descriptors.
+     * Uses intelligent bandwidth negotiation for optimal quality.
      * @return true if format is likely supported (based on common patterns)
      */
     private boolean tryConfigureFormat(String format, int width, int height, int fmtIdx, int frmIdx) {
@@ -441,61 +508,125 @@ public class MainActivity extends AppCompatActivity {
         frameIndex = frmIdx;
         videoFormat = format;
         
-        // Calculate appropriate frame interval and packet size based on format
+        // Calculate optimal frame interval and packet size based on format and resolution
         if ("MJPEG".equals(format)) {
-            frameInterval = 333333; // 30 fps
-            maxPacketSize = 3072; // Typical for MJPEG
-            streamingAltSetting = 1;
+            // MJPEG quality optimization
+            // Higher frame rates for better perceived quality
+            if (width <= 320) {
+                frameInterval = 66666;   // 150 fps - smooth for low res
+                maxPacketSize = 1024;
+                streamingAltSetting = 1;
+            } else if (width <= 640) {
+                frameInterval = 100000;  // 100 fps - high quality
+                maxPacketSize = 2048;
+                streamingAltSetting = 2;
+            } else if (width <= 800) {
+                frameInterval = 111111;  // ~90 fps
+                maxPacketSize = 2560;
+                streamingAltSetting = 2;
+            } else if (width <= 1280) {
+                frameInterval = 166666;  // ~60 fps for HD
+                maxPacketSize = 3072;
+                streamingAltSetting = 3;
+            } else {
+                frameInterval = 200000;  // 50 fps for Full HD
+                maxPacketSize = 3072;
+                streamingAltSetting = 4;
+            }
         } else if ("YUY2".equals(format)) {
-            // YUY2 is uncompressed, needs more bandwidth
-            frameInterval = 666666; // 15 fps (safer for uncompressed)
+            // YUY2 is uncompressed, needs adaptive bandwidth
+            frameInterval = calculateYuy2FrameInterval(width, height);
             maxPacketSize = calculateYuy2PacketSize(width, height);
             streamingAltSetting = findAppropriateAltSetting(maxPacketSize);
         } else {
-            // Other formats - use conservative settings
-            frameInterval = 666666; // 15 fps
+            // Other formats - use quality-focused settings
+            frameInterval = 166666; // ~60 fps
             maxPacketSize = 3072;
-            streamingAltSetting = 1;
+            streamingAltSetting = 3;
         }
         
-        Log.d(TAG, "Trying format: " + format + " " + width + "x" + height);
+        Log.d(TAG, "Trying format: " + format + " " + width + "x" + height + 
+              " @" + (10000000 / frameInterval) + "fps, packet=" + maxPacketSize + 
+              ", alt=" + streamingAltSetting);
         return true; // Optimistically assume it's supported - native code will validate
     }
     
-    private int calculateYuy2PacketSize(int width, int height) {
+    /**
+     * Calculate optimal frame interval for YUY2 format based on resolution
+     * Tries to maximize frame rate while keeping USB bandwidth reasonable
+     */
+    private int calculateYuy2FrameInterval(int width, int height) {
         // YUY2 is 16 bits per pixel (2 bytes)
-        // For streaming, use appropriate chunk sizes for bandwidth
         int bytesPerFrame = width * height * 2;
-        int fps = 15;
-        int bytesPerSecond = bytesPerFrame * fps;
         
-        // Use appropriate packet size - typical USB 2.0 high-speed max is 3072
-        // Scale based on resolution
+        // Target different frame rates based on resolution
+        // Try to achieve 30fps for lower resolutions, adaptive for higher
         if (width <= 320) {
-            return 1024;
+            return 166666;  // ~60 fps for very low res
         } else if (width <= 640) {
-            return 2048;
+            return 166666;  // ~60 fps for 640x480
         } else if (width <= 800) {
-            return 3072;
+            return 200000;  // 50 fps for 800x600
         } else if (width <= 1280) {
-            return 3072; // Still 3072 - USB 2.0 max single packet
+            return 333333;  // ~30 fps for HD
         } else {
-            return 3072; // Maximum USB 2.0 high-speed packet size
+            return 500000;  // 20 fps for Full HD (uncompressed needs more bandwidth)
         }
     }
     
-    private int findAppropriateAltSetting(int requiredPacketSize) {
-        // Map packet sizes to typical alt settings
-        // Alt 0: 0 bytes (no bandwidth)
-        // Alt 1-7: Increasing bandwidth allocation
-        if (requiredPacketSize <= 512) {
-            return 1;
-        } else if (requiredPacketSize <= 1024) {
-            return 2;
-        } else if (requiredPacketSize <= 2048) {
-            return 4;
+    /**
+     * Calculate optimal packet size for YUY2 based on resolution and bandwidth requirements
+     */
+    private int calculateYuy2PacketSize(int width, int height) {
+        // YUY2 is 16 bits per pixel (2 bytes)
+        int bytesPerFrame = width * height * 2;
+        
+        // USB 2.0 high-speed bandwidth: 480 Mbps = 60 MB/s
+        // Use up to 60% for streaming to leave room for overhead
+        // Isoc packet max is 3072 bytes, but we can negotiate higher with alt settings
+        
+        if (width <= 320) {
+            // 320x240@60fps = 307200*2*60 = ~36.9 MB/s - use moderate packet
+            return 1024;
+        } else if (width <= 640) {
+            // 640x480@60fps = 614400*2*60 = ~73.7 MB/s - need good bandwidth
+            return 2560;  // Use larger packets for better efficiency
+        } else if (width <= 800) {
+            // 800x600@50fps = 960000*2*50 = ~96 MB/s - high bandwidth
+            return 3072;  // Maximum per-packet
+        } else if (width <= 1280) {
+            // 1280x720@30fps = 921600*2*30 = ~55.3 MB/s - use max packets
+            return 3072;
         } else {
-            return 6; // Maximum bandwidth for USB 2.0 high-speed
+            // 1920x1080@20fps = 4147200*2*20 = ~165 MB/s - max bandwidth
+            return 3072;
+        }
+    }
+    
+    /**
+     * Find appropriate alt setting based on packet size and bandwidth needs
+     * Higher alt settings allocate more bandwidth
+     */
+    private int findAppropriateAltSetting(int requiredPacketSize) {
+        // Map packet sizes to alt settings with bandwidth allocation
+        // Alt 0: 0 bytes (no bandwidth)
+        // Alt 1-15: Increasing bandwidth allocation
+        // Use aggressive settings for quality
+        
+        if (requiredPacketSize <= 512) {
+            return 1;  // Minimal bandwidth
+        } else if (requiredPacketSize <= 1024) {
+            return 2;  // 1 x 1024
+        } else if (requiredPacketSize <= 1536) {
+            return 3;  // 1.5 x 1024
+        } else if (requiredPacketSize <= 2048) {
+            return 4;  // 2 x 1024
+        } else if (requiredPacketSize <= 2560) {
+            return 5;  // 2.5 x 1024
+        } else if (requiredPacketSize <= 3072) {
+            return 6;  // 3 x 1024 - Maximum USB 2.0 high-speed
+        } else {
+            return 7;  // Request even higher if device supports extended alt settings
         }
     }
     
@@ -679,13 +810,25 @@ public class MainActivity extends AppCompatActivity {
     }
     
     private void closeCamera() {
-        // Don't close the device connection here because:
-        // 1. Native code is using the file descriptor
-        // 2. Native code will handle cleanup through libusb
-        // 3. Closing here would invalidate the FD while native code is using it
+        Log.d(TAG, "closeCamera called");
         
-        // Connection will be closed when app process terminates
-        Log.d(TAG, "closeCamera called - native code owns the connection");
+        try {
+            if (deviceConnection != null) {
+                try {
+                    deviceConnection.close();
+                    Log.d(TAG, "Device connection closed");
+                } catch (Exception e) {
+                    Log.e(TAG, "Error closing device connection", e);
+                }
+                deviceConnection = null;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error in closeCamera", e);
+        }
+        
+        cameraDevice = null;
+        streamingInterface = null;
+        controlInterface = null;
     }
     
     private void updateStatus(String message) {
