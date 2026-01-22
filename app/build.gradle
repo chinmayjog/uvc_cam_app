@@ -1,0 +1,71 @@
+apply plugin: 'com.android.application'
+
+android {
+    namespace 'com.minimal.uvccamera'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId "com.minimal.uvccamera"
+        minSdkVersion 21
+        targetSdkVersion 36
+        versionCode 1
+        versionName "1.0"
+        
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+        }
+        
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++11"
+                arguments "-DANDROID_STL=c++_shared"
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+            jniDebuggable true
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.22.1"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    packagingOptions {
+        pickFirst 'lib/x86/libUvc_Support.so'
+        pickFirst 'lib/x86_64/libUvc_Support.so'
+        pickFirst 'lib/armeabi-v7a/libUvc_Support.so'
+        pickFirst 'lib/arm64-v8a/libUvc_Support.so'
+        
+        pickFirst 'lib/x86/libyuv.so'
+        pickFirst 'lib/x86_64/libyuv.so'
+        pickFirst 'lib/armeabi-v7a/libyuv.so'
+        pickFirst 'lib/arm64-v8a/libyuv.so'
+        
+        pickFirst 'lib/x86/libuvc_preview.so'
+        pickFirst 'lib/x86_64/libuvc_preview.so'
+        pickFirst 'lib/armeabi-v7a/libuvc_preview.so'
+        pickFirst 'lib/arm64-v8a/libuvc_preview.so'
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+}

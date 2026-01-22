@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Match standard UVC class devices (class 14 = video, subclass 2 = streaming) -->
+    <usb-device class="14" subclass="2" />
+    <!-- Match composite class devices advertising video subclass (239 = misc composite) -->
+    <usb-device class="239" subclass="2" />
+</resources>
