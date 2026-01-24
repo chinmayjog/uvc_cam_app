@@ -158,6 +158,9 @@ extern int set_the_native_Values (uvc_camera_t *uvc_camera, int FD, int packetsP
 extern int initStreamingParms(uvc_camera_t *uvc_camera, int FD);
 extern void stopStreaming(uvc_camera_t *uvc_camera);
 extern void stopJavaVM();
+extern void resetCameraState();
+extern void destroyPreview(uvc_camera_t *uvc_camera);
+extern void closeCameraDevice(uvc_camera_t *uvc_camera);
 
 #ifdef __cplusplus
 }

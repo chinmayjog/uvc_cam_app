@@ -98,8 +98,10 @@ public class MainActivity extends AppCompatActivity {
                                       int bcdUVC, int lowAndroid);
     
     // Native method to initialize streaming parameters (wraps FD with libusb)
-    private native int initStreamingParms(long cameraPtr, int fd);
-    private native int listDeviceUvc(long cameraPtr, int fd);
+    public static native int initStreamingParms(long cameraPtr, int fd);
+    public static native int listDeviceUvc(long cameraPtr, int fd);
+    public static native void resetCameraState();
+    public static native void closeCameraDevice(long cameraPtr);
     
     static {
         try {
@@ -180,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
         startButton = findViewById(R.id.startButton);
         
         startButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+            Intent intent = new Intent(MainActivity.this, FaultFormActivity.class);
             intent.putExtra("imageWidth", imageWidth);
             intent.putExtra("imageHeight", imageHeight);
             intent.putExtra("formatIndex", formatIndex);
@@ -192,6 +194,12 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("videoFormat", videoFormat);
             intent.putExtra("deviceName", cameraDevice.getDeviceName());
             intent.putExtra("mNativePtr", mNativePtr);  // Pass native pointer
+            
+            // Collect all available UVC cameras and pass them to FaultFormActivity
+            String[] allCameraNames = getAllUvcCameraNames();
+            intent.putExtra("allCameraNames", allCameraNames);
+            Log.d(TAG, "Starting FaultFormActivity with " + allCameraNames.length + " cameras");
+            
             startActivity(intent);
         });
         
@@ -235,19 +243,43 @@ public class MainActivity extends AppCompatActivity {
         HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
         Log.d(TAG, "USB devices found: " + deviceList.size());
         
+        StringBuilder deviceInfo = new StringBuilder("Detected UVC Cameras:\n");
+        int uvcCameraCount = 0;
+        
+        // First pass: list all UVC cameras found
         for (UsbDevice device : deviceList.values()) {
             Log.d(TAG, "Checking device: " + device.getDeviceName() + 
                   " VID: 0x" + Integer.toHexString(device.getVendorId()) +
                   " PID: 0x" + Integer.toHexString(device.getProductId()));
             if (isUvcCamera(device)) {
-                cameraDevice = device;
-                Log.d(TAG, "UVC Camera found: " + device.getDeviceName());
-                requestPermission(device);
-                return;
+                uvcCameraCount++;
+                deviceInfo.append(uvcCameraCount).append(". ").append(device.getDeviceName())
+                        .append(" (VID: 0x").append(Integer.toHexString(device.getVendorId()))
+                        .append(", PID: 0x").append(Integer.toHexString(device.getProductId()))
+                        .append(")\n");
+                Log.d(TAG, "UVC Camera " + uvcCameraCount + " found: " + device.getDeviceName());
             }
         }
         
-        updateStatus(getString(R.string.no_camera));
+        // Second pass: select first camera for initialization
+        for (UsbDevice device : deviceList.values()) {
+            if (isUvcCamera(device)) {
+                cameraDevice = device;
+                Log.d(TAG, "Selected first UVC camera: " + device.getDeviceName());
+                requestPermission(device);
+                break;
+            }
+        }
+        
+        if (uvcCameraCount == 0) {
+            updateStatus(getString(R.string.no_camera));
+            deviceInfo.append("No UVC cameras found");
+        } else {
+            deviceInfo.append("\n(Using camera 1 for form)");
+        }
+        
+        // Display all found cameras on screen
+        mainHandler.post(() -> cameraInfoText.setText(deviceInfo.toString()));
     }
     
     private boolean isUvcCamera(UsbDevice device) {
@@ -262,6 +294,26 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return false;
+    }
+    
+    /**
+     * Get all available UVC cameras detected on the device
+     * @return Array of camera device names (e.g. "/dev/bus/usb/001/049")
+     */
+    private String[] getAllUvcCameraNames() {
+        HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
+        java.util.ArrayList<String> cameraNames = new java.util.ArrayList<>();
+        
+        for (UsbDevice device : deviceList.values()) {
+            if (isUvcCamera(device)) {
+                cameraNames.add(device.getDeviceName());
+                Log.d(TAG, "Adding camera to list: " + device.getDeviceName());
+            }
+        }
+        
+        String[] result = cameraNames.toArray(new String[0]);
+        Log.d(TAG, "Total cameras found: " + result.length);
+        return result;
     }
     
     private void requestPermission(UsbDevice device) {
@@ -843,6 +895,12 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, 
             android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             permissionsToRequest.add(android.Manifest.permission.CAMERA);
+        }
+        
+        // Record audio permission (for USB devices with audio)
+        if (ContextCompat.checkSelfPermission(this,
+            android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            permissionsToRequest.add(android.Manifest.permission.RECORD_AUDIO);
         }
         
         // Storage permissions

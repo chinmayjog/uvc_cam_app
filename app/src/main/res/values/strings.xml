@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Minimal UVC Camera</string>
+    <string name="app_name">Fault Documentation</string>
     <string name="detecting">Detecting camera...</string>
     <string name="configuring">Configuring camera...</string>
     <string name="ready">Camera ready</string>
-    <string name="start_preview">Start Preview</string>
+    <string name="start_preview">Start Fault Form</string>
     <string name="stop_preview">Stop Preview</string>
     <string name="take_picture">Take Picture</string>
     <string name="no_camera">No USB camera found</string>

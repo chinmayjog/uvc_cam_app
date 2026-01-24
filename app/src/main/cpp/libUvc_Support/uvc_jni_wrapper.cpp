@@ -181,3 +181,18 @@ extern "C" JNIEXPORT jint JNICALL Java_com_minimal_uvccamera_MainActivity_listDe
     
     return (info != NULL) ? 0 : -1;
 }
+
+// Reset camera state to allow switching cameras
+extern "C" JNIEXPORT void JNICALL Java_com_minimal_uvccamera_MainActivity_resetCameraState
+        (JNIEnv *env, jobject obj) {
+    
+    resetCameraState();
+}
+
+// Close camera device to release USB resources
+extern "C" JNIEXPORT void JNICALL Java_com_minimal_uvccamera_MainActivity_closeCameraDevice
+        (JNIEnv *env, jobject obj, ID_TYPE mNativePtr) {
+    
+    uvc_camera_t *camera = reinterpret_cast<uvc_camera_t *>(mNativePtr);
+    closeCameraDevice(camera);
+}

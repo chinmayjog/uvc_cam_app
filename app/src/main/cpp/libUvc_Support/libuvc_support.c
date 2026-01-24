@@ -114,6 +114,56 @@ uint8_t libusb_Is_initialized;
 uint8_t cameraDevice_is_wraped;
 uint8_t cameraDevice_is_rewraped;
 
+// Reset camera state flags to allow switching between cameras
+void resetCameraState() {
+    LOGD("resetCameraState: clearing static flags");
+    camIsOpen = false;
+    cameraDevice_is_wraped = 0;
+    cameraDevice_is_rewraped = 0;
+}
+
+// Destroy old preview to avoid stale pointers
+void destroyPreview(uvc_camera_t *uvc_camera) {
+    if (uvc_camera && uvc_camera->preview_pointer) {
+        LOGD("destroyPreview: clearing old preview object");
+        // Just clear the pointer - new preview will be created
+        uvc_camera->preview_pointer = 0;
+    }
+}
+
+// Close camera device handle to release USB resources
+void closeCameraDevice(uvc_camera_t *uvc_camera) {
+    LOGD("closeCameraDevice: preparing for device switch");
+    if (!uvc_camera) {
+        LOGD("closeCameraDevice: camera is NULL, skipping");
+        return;
+    }
+    
+    // CRITICAL: Release all claimed interfaces BEFORE clearing device handle
+    // This prevents USB resource exhaustion and memory leaks
+    if (uvc_camera->camera_deviceHandle && uvc_camera->camera_deviceHandle->usb_devh) {
+        LOGD("closeCameraDevice: releasing claimed interfaces");
+        for (int if_num = 0; if_num < (uvc_camera->camStreamingInterfaceNum + 1); if_num++) {
+            int ret = libusb_release_interface(uvc_camera->camera_deviceHandle->usb_devh, if_num);
+            if (ret == LIBUSB_SUCCESS) {
+                LOGD("Released interface %d", if_num);
+            } else if (ret != LIBUSB_ERROR_NOT_FOUND && ret != LIBUSB_ERROR_NO_DEVICE) {
+                LOGD("Warning: libusb_release_interface(%d) returned %d", if_num, ret);
+            }
+        }
+    }
+    
+    // DON'T call uvc_close - it crashes on device pointer that libusb still owns
+    // Just clear our reference and reset state flags
+    // The next initStreamingParms will wrap the new FD properly
+    
+    uvc_camera->camera_deviceHandle = NULL;
+    LOGD("closeCameraDevice: cleared device handle reference");
+    
+    // Reset state flags to allow next device to be initialized
+    resetCameraState();
+}
+
 
 typedef struct _CTL_Data
 {
