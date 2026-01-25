@@ -16,6 +16,7 @@ import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -32,6 +33,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -77,6 +79,7 @@ public class FaultFormActivity extends AppCompatActivity {
     private long mNativePtr = 0;
     private Handler mainHandler;
     private volatile boolean isStreaming = false;
+    private volatile boolean streamStarted = false; // true only after PreviewStartStream succeeds
     private volatile boolean capturePending = false;
     private volatile boolean isStopping = false;  // Prevent concurrent stop calls
 
@@ -298,6 +301,8 @@ public class FaultFormActivity extends AppCompatActivity {
                         Log.d(TAG, "Closing previous camera device");
                         try {
                             MainActivity.closeCameraDevice(mNativePtr);
+                            // Give USB time to release interfaces before opening new camera
+                            Thread.sleep(200);
                         } catch (Exception e) {
                             Log.e(TAG, "Error closing camera device: " + e.getMessage(), e);
                         }
@@ -349,7 +354,43 @@ public class FaultFormActivity extends AppCompatActivity {
                 }
                 Log.d(TAG, "listDeviceUvc succeeded");
 
+                // CRITICAL: Sync native camera state after opening new device
+                // This ensures the native side has the correct format/frame indices for THIS camera
+                Log.d(TAG, "Setting native values to sync with camera's actual capabilities");
+                Log.d(TAG, "Format: " + videoFormat + " " + imageWidth + "x" + imageHeight + 
+                           " alt=" + streamingAltSetting + " packet=" + maxPacketSize);
+                
+                try {
+                    int syncResult = MainActivity.setNativeValues(mNativePtr, fd,
+                            8,                          // packetsPerRequest
+                            maxPacketSize,
+                            5,                          // activeUrbs
+                            streamingAltSetting,
+                            formatIndex,
+                            frameIndex,
+                            frameInterval,
+                            imageWidth,
+                            imageHeight,
+                            streamingInterfaceNumber,   // endpoint
+                            streamingInterfaceNumber,
+                            videoFormat,
+                            1,                          // numberOfAutoFrames
+                            0x110,                      // bcdUVC (UVC 1.10)
+                            1                           // lowAndroid
+                    );
+                    if (syncResult != 0) {
+                        Log.w(TAG, "setNativeValues returned non-zero: " + syncResult + 
+                                   " (may indicate format mismatch, will try fallback)");
+                    } else {
+                        Log.d(TAG, "setNativeValues succeeded");
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error in setNativeValues: " + e.getMessage(), e);
+                    // Continue anyway - native code might still work with defaults
+                }
+
                 // Adjust preview surface size based on negotiated resolution
+
                 // This ensures the preview displays correct aspect ratio for the current camera
                 mainHandler.post(() -> {
                     Log.d(TAG, "Adjusting surface view for resolution: " + imageWidth + "x" + imageHeight);
@@ -374,67 +415,156 @@ public class FaultFormActivity extends AppCompatActivity {
                     int startResult = uvcCamera.PreviewStartStream(mNativePtr);
                     if (startResult == 0) {
                         isStreaming = true;
-                        mainHandler.post(() -> statusText.setText("Streaming"));
+                        streamStarted = true;
+                        mainHandler.post(() -> {
+                            statusText.setText("Streaming");
+                            captureButton.setEnabled(true);  // Enable capture when stream is ready
+                        });
                     } else {
-                        // Stream start failed - try fallback format
+                        // Stream start failed - try fallbacks
                         Log.w(TAG, "PreviewStartStream failed with code " + startResult + 
-                              ", trying fallback format");
-                        
-                        // Stop the failed preparation before trying again
+                              ", trying fallback formats");
                         try {
                             uvcCamera.PreviewStopStream(mNativePtr);
                         } catch (Exception e) {
                             Log.e(TAG, "Error cleaning up failed stream", e);
                         }
-                        
-                        // Try lower resolution fallback
+
+                        // First fallback: 640x480 MJPEG with larger packet size, alt=2
                         if (imageWidth > 640 || imageHeight > 480) {
-                            Log.d(TAG, "Trying fallback: 640x480 instead of " + imageWidth + "x" + imageHeight);
+                            Log.d(TAG, "Trying fallback #1: 640x480 alt=2 packet=2048 instead of " + imageWidth + "x" + imageHeight);
                             imageWidth = 640;
                             imageHeight = 480;
                             frameInterval = 100000;
                             maxPacketSize = 2048;
                             streamingAltSetting = 2;
                             videoFormat = "MJPEG";
-                            
-                            // Retry with fallback format
                             try {
-                                Log.d(TAG, "Re-calling initStreamingParms with fallback format");
+                                Log.d(TAG, "Re-calling initStreamingParms with fallback #1 (alt=2)");
                                 int retryResult = MainActivity.initStreamingParms(mNativePtr, fd);
                                 if (retryResult == 0) {
-                                    Log.d(TAG, "Retrying PreviewPrepareStream with fallback");
+                                    Log.d(TAG, "Retrying PreviewPrepareStream with fallback #1");
                                     int retryPrepare = uvcCamera.PreviewPrepareStream(mNativePtr, surface, frameCallback);
                                     if (retryPrepare == 0) {
                                         int retryStart = uvcCamera.PreviewStartStream(mNativePtr);
                                         if (retryStart == 0) {
                                             isStreaming = true;
-                                            mainHandler.post(() -> statusText.setText("Streaming (fallback 640x480)"));
-                                            Log.d(TAG, "Fallback format succeeded");
+                                            streamStarted = true;
+                                            mainHandler.post(() -> statusText.setText("Streaming (fallback 640x480 alt=2)"));
+                                            Log.d(TAG, "Fallback #1 succeeded");
+                                            return;
                                         } else {
-                                            final int fallbackError = retryStart;
-                                            mainHandler.post(() -> {
-                                                Toast.makeText(FaultFormActivity.this, "Stream start failed: " + fallbackError, Toast.LENGTH_SHORT).show();
-                                                statusText.setText("Camera error - tap Capture to retry");
-                                            });
+                                            Log.w(TAG, "Fallback #1 start failed with code " + retryStart + ", trying fallback #2");
+                                            try {
+                                                uvcCamera.PreviewStopStream(mNativePtr);
+                                            } catch (Exception stopEx) {
+                                                Log.e(TAG, "Error cleaning up after fallback #1 start failure", stopEx);
+                                            }
                                         }
+                                    } else {
+                                        Log.w(TAG, "Fallback #1 prepare failed with code " + retryPrepare + ", trying fallback #2");
                                     }
+                                } else {
+                                    Log.w(TAG, "Fallback #1 initStreamingParms failed with code " + retryResult + ", trying fallback #2");
                                 }
                             } catch (Exception ex) {
-                                Log.e(TAG, "Error retrying with fallback format", ex);
+                                Log.e(TAG, "Error retrying with fallback #1", ex);
                             }
-                        } else {
-                            final int errorCode = startResult;
-                            mainHandler.post(() -> {
-                                Toast.makeText(FaultFormActivity.this, "Start stream failed: " + errorCode, Toast.LENGTH_SHORT).show();
-                                statusText.setText("Camera error - tap Capture to retry");
-                            });
                         }
+
+                        // Second fallback: lower bandwidth MJPEG 640x480 alt=1, packet=1024
+                        try {
+                            Log.d(TAG, "Trying fallback #2: 640x480 alt=1 packet=1024");
+                            imageWidth = 640;
+                            imageHeight = 480;
+                            frameInterval = 100000;
+                            maxPacketSize = 1024;
+                            streamingAltSetting = 1;
+                            videoFormat = "MJPEG";
+
+                            Log.d(TAG, "Calling initStreamingParms with fallback #2 (alt=1)");
+                            int retryResult2 = MainActivity.initStreamingParms(mNativePtr, fd);
+                            if (retryResult2 == 0) {
+                                int retryPrepare2 = uvcCamera.PreviewPrepareStream(mNativePtr, surface, frameCallback);
+                                if (retryPrepare2 == 0) {
+                                    int retryStart2 = uvcCamera.PreviewStartStream(mNativePtr);
+                                    if (retryStart2 == 0) {
+                                        isStreaming = true;
+                                        streamStarted = true;
+                                        mainHandler.post(() -> statusText.setText("Streaming (fallback 640x480 alt=1)"));
+                                        Log.d(TAG, "Fallback #2 succeeded");
+                                        return;
+                                    } else {
+                                        Log.w(TAG, "Fallback #2 start failed with code " + retryStart2 + ", trying fallback #3");
+                                        try {
+                                            uvcCamera.PreviewStopStream(mNativePtr);
+                                        } catch (Exception stopEx) {
+                                            Log.e(TAG, "Error cleaning up after fallback #2 start failure", stopEx);
+                                        }
+                                    }
+                                } else {
+                                    Log.w(TAG, "Fallback #2 prepare failed with code " + retryPrepare2 + ", trying fallback #3");
+                                }
+                            } else {
+                                Log.w(TAG, "Fallback #2 initStreamingParms failed with code " + retryResult2 + ", trying fallback #3");
+                            }
+                        } catch (Exception ex2) {
+                            Log.e(TAG, "Error retrying with fallback #2", ex2);
+                        }
+
+                        // Third fallback: no alternate setting (alt=0), minimal packet size
+                        try {
+                            Log.d(TAG, "Trying fallback #3: 640x480 alt=0 packet=512");
+                            imageWidth = 640;
+                            imageHeight = 480;
+                            frameInterval = 100000;
+                            maxPacketSize = 512;
+                            streamingAltSetting = 0;
+                            videoFormat = "MJPEG";
+
+                            Log.d(TAG, "Calling initStreamingParms with fallback #3 (alt=0)");
+                            int retryResult3 = MainActivity.initStreamingParms(mNativePtr, fd);
+                            if (retryResult3 == 0) {
+                                int retryPrepare3 = uvcCamera.PreviewPrepareStream(mNativePtr, surface, frameCallback);
+                                if (retryPrepare3 == 0) {
+                                    int retryStart3 = uvcCamera.PreviewStartStream(mNativePtr);
+                                    if (retryStart3 == 0) {
+                                        isStreaming = true;
+                                        streamStarted = true;
+                                        mainHandler.post(() -> statusText.setText("Streaming (fallback 640x480 alt=0)"));
+                                        Log.d(TAG, "Fallback #3 succeeded");
+                                        return;
+                                    } else {
+                                        Log.w(TAG, "Fallback #3 start failed with code " + retryStart3);
+                                    }
+                                } else {
+                                    Log.w(TAG, "Fallback #3 prepare failed with code " + retryPrepare3);
+                                }
+                            } else {
+                                Log.w(TAG, "Fallback #3 initStreamingParms failed with code " + retryResult3);
+                            }
+                        } catch (Exception ex3) {
+                            Log.e(TAG, "Error retrying with fallback #3", ex3);
+                        }
+
+                        // All attempts failed
+                        final int errorCode = startResult;
+                        streamStarted = false;
+                        isStreaming = false;
+                        mainHandler.post(() -> {
+                            Toast.makeText(FaultFormActivity.this, "Start stream failed: " + errorCode, Toast.LENGTH_SHORT).show();
+                            statusText.setText("Camera error - tap Capture to retry");
+                            captureButton.setEnabled(false);  // Disable capture since stream failed
+                        });
                     }
                 } else {
                     final int errorCode = prepareResult;
+                    streamStarted = false;
+                    isStreaming = false;
                     mainHandler.post(() -> {
                         Toast.makeText(this, "Prepare stream failed: " + errorCode, Toast.LENGTH_SHORT).show();
                         statusText.setText("Camera error - tap Capture to retry");
+                        captureButton.setEnabled(false);  // Disable capture since stream failed
                     });
                 }
             } catch (Exception e) {
@@ -442,6 +572,7 @@ public class FaultFormActivity extends AppCompatActivity {
                 mainHandler.post(() -> {
                     Toast.makeText(this, "Camera error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     statusText.setText("Camera error - tap Capture to retry");
+                    captureButton.setEnabled(false);  // Disable capture on exception
                 });
             }
         }).start();
@@ -818,7 +949,7 @@ public class FaultFormActivity extends AppCompatActivity {
                 return null;
             }
 
-            File picturesDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "FaultDocs");
+            File picturesDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "FaultDocs");
             if (!picturesDir.exists()) {
                 picturesDir.mkdirs();
             }
@@ -839,6 +970,48 @@ public class FaultFormActivity extends AppCompatActivity {
     }
 
     private void exportPdf() {
+        // CRITICAL: Clean up ONLY if there's an active stream
+        // Don't cleanup non-existent streams - it crashes
+        if (streamStarted || isStreaming) {
+            Log.d(TAG, "exportPdf: cleaning up active stream");
+            
+            try {
+                // Stop any active streaming
+                stopStreaming();
+                Thread.sleep(500);  // Wait for stream to fully stop
+                
+                // Close USB device connection
+                if (deviceConnection != null) {
+                    try {
+                        deviceConnection.close();
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error closing device connection during PDF export", e);
+                    }
+                    deviceConnection = null;
+                }
+                
+                // Clean up native camera state
+                if (mNativePtr != 0) {
+                    try {
+                        MainActivity.closeCameraDevice(mNativePtr);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error closing camera device during PDF export", e);
+                    }
+                }
+                
+                Thread.sleep(300);  // Wait for USB cleanup
+            } catch (InterruptedException e) {
+                Log.e(TAG, "Interrupted during cleanup before PDF export", e);
+            }
+            
+            // Explicitly reset flags after cleanup (stopStreaming should do this, but be explicit)
+            streamStarted = false;
+            isStreaming = false;
+            Log.d(TAG, "Cleanup complete, flags reset, starting PDF export");
+        } else {
+            Log.d(TAG, "No active stream to cleanup, proceeding directly to PDF export");
+        }
+        
         for (int i = 0; i < FORM_STEPS; i++) {
             if (imagePaths[i] == null) {
                 Toast.makeText(this, "Missing photo for step " + (i + 1), Toast.LENGTH_SHORT).show();
@@ -879,7 +1052,7 @@ public class FaultFormActivity extends AppCompatActivity {
             document.finishPage(page);
         }
 
-        File reportsDir = new File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "FaultReports");
+        File reportsDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "FaultReports");
         if (!reportsDir.exists()) {
             reportsDir.mkdirs();
         }
@@ -887,8 +1060,25 @@ public class FaultFormActivity extends AppCompatActivity {
         File pdfFile = new File(reportsDir, "fault_report_" + timeStamp + ".pdf");
         try (FileOutputStream fos = new FileOutputStream(pdfFile)) {
             document.writeTo(fos);
-            Toast.makeText(this, "Report saved: " + pdfFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
-            Log.d(TAG, "PDF generated at " + pdfFile.getAbsolutePath());
+            String savedPath = pdfFile.getAbsolutePath();
+            Toast.makeText(this, "Report saved: " + savedPath, Toast.LENGTH_LONG).show();
+            Log.d(TAG, "PDF generated at " + savedPath);
+
+            // Open the generated PDF for the user
+            try {
+                Uri pdfUri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", pdfFile);
+                Intent viewIntent = new Intent(Intent.ACTION_VIEW);
+                viewIntent.setDataAndType(pdfUri, "application/pdf");
+                viewIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NO_HISTORY);
+
+                if (viewIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(viewIntent);
+                } else {
+                    Log.w(TAG, "No PDF viewer available to open report");
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Unable to open generated PDF", e);
+            }
         } catch (IOException e) {
             Log.e(TAG, "Failed to write PDF", e);
             Toast.makeText(this, "PDF error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -921,31 +1111,37 @@ public class FaultFormActivity extends AppCompatActivity {
             Log.d(TAG, "stopStreaming already in progress, skipping");
             return;
         }
-        
-        if (!isStreaming && deviceConnection == null) {
-            Log.d(TAG, "stopStreaming called but already stopped, skipping");
+        // If nothing is streaming or native pointer is invalid, skip
+        if ((!isStreaming && deviceConnection == null) || mNativePtr == 0) {
+            Log.d(TAG, "stopStreaming called but already stopped or native ptr invalid, skipping");
             return;
         }
-        
+
         isStopping = true;
         
         // Stop the preview FIRST (and wait for threads to join), THEN close the device
         // Closing device first would invalidate native structures that stopPreview needs
-        if (isStreaming && mNativePtr != 0) {
+        if (streamStarted && isStreaming && mNativePtr != 0) {
             try {
                 Log.d(TAG, "Stopping preview stream");
 
                 Runnable stopTask = () -> {
                     try {
-                        if (isStreaming) {
+                        if (streamStarted && isStreaming) {
                             Log.d(TAG, "Calling native PreviewStopStream");
-                            uvcCamera.PreviewStopStream(mNativePtr);
+                            try {
+                                uvcCamera.PreviewStopStream(mNativePtr);
+                            } catch (Throwable t) {
+                                Log.e(TAG, "Native PreviewStopStream crashed", t);
+                            }
                             Log.d(TAG, "Native PreviewStopStream completed");
                         }
                     } catch (Exception e) {
                         Log.e(TAG, "Error stopping stream", e);
                     }
                     isStreaming = false;
+                    streamStarted = false;
+                    captureButton.setEnabled(false);  // Disable capture when stream stops
                 };
 
                 if (Looper.myLooper() == Looper.getMainLooper()) {
@@ -964,6 +1160,7 @@ public class FaultFormActivity extends AppCompatActivity {
             } catch (Exception e) {
                 Log.e(TAG, "Error posting stop stream to main thread", e);
                 isStreaming = false;
+                streamStarted = false;
             } finally {
                 isStopping = false;
             }
@@ -979,6 +1176,11 @@ public class FaultFormActivity extends AppCompatActivity {
             }
             deviceConnection = null;
         }
+        // Reset stop guard so future stop attempts can proceed
+        isStopping = false;
+        // Ensure flags are reset even if we skipped PreviewStopStream
+        streamStarted = false;
+        isStreaming = false;
     }
 
     private void adjustSurfaceViewSize() {

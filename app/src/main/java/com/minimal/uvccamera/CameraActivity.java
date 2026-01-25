@@ -367,7 +367,7 @@ public class CameraActivity extends AppCompatActivity {
                 
                 if (bitmap != null) {
                     // Save bitmap
-                    File picturesDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "UVCCamera");
+                    File picturesDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "UVCCamera");
                     if (!picturesDir.exists()) {
                         picturesDir.mkdirs();
                     }

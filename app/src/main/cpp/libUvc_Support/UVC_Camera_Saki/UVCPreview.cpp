@@ -54,6 +54,8 @@ UVCPreview::UVCPreview(uvc_device_handle_t *devh):
         mPreviewWindow(NULL),
         mCaptureWindow(NULL),
         mDeviceHandle(devh),
+        preview_thread(0),
+        capture_thread(0),
         requestWidth(DEFAULT_PREVIEW_WIDTH),
         requestHeight(DEFAULT_PREVIEW_HEIGHT),
         requestMinFps(DEFAULT_PREVIEW_FPS_MIN),
@@ -451,16 +453,28 @@ int UVCPreview::startPreview() {
 
 int UVCPreview::stopPreview() {
 	ENTER();
+	// Guard: if device handle is invalid or never initialized, bail early
+	if (!mDeviceHandle) {
+		LOGW("stopPreview called but device handle is NULL, skipping");
+		RETURN(0, int);
+	}
 	bool b = isRunning();
 	if (LIKELY(b)) {
 		mIsRunning = false;
 		pthread_cond_signal(&preview_sync);
 		pthread_cond_signal(&capture_sync);
-		if (pthread_join(capture_thread, NULL) != EXIT_SUCCESS) {
-			LOGW("UVCPreview::terminate capture thread: pthread_join failed");
+		// Only join threads if they were actually created (non-zero)
+		if (capture_thread != 0) {
+			if (pthread_join(capture_thread, NULL) != EXIT_SUCCESS) {
+				LOGW("UVCPreview::terminate capture thread: pthread_join failed");
+			}
+			capture_thread = 0;
 		}
-		if (pthread_join(preview_thread, NULL) != EXIT_SUCCESS) {
-			LOGW("UVCPreview::terminate preview thread: pthread_join failed");
+		if (preview_thread != 0) {
+			if (pthread_join(preview_thread, NULL) != EXIT_SUCCESS) {
+				LOGW("UVCPreview::terminate preview thread: pthread_join failed");
+			}
+			preview_thread = 0;
 		}
 		clearDisplay();
 	}

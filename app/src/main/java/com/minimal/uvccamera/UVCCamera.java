@@ -50,6 +50,13 @@ public class UVCCamera {
     public native int PreviewCapturePicture(long cameraPtr);
     
     /**
+     * Enumerate all supported camera formats and frames from UVC descriptors
+     * @param cameraPtr pointer to camera structure
+     * @return array of CameraFormatInfo objects describing supported configurations
+     */
+    public native CameraFormatInfo[] enumerateCameraFormats(long cameraPtr);
+    
+    /**
      * Frame callback interface
      */
     public interface IFrameCallback {

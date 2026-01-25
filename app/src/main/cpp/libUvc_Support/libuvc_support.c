@@ -1100,6 +1100,157 @@ int copyToSurface(uvc_frame_t *frame, ANativeWindow **window) {
     return result; //RETURN(result, int);
 }
 
+/**
+ * JNI Function: Enumerate all supported camera formats and frames
+ * Returns array of CameraFormatInfo objects describing camera capabilities
+ */
+JNIEXPORT jobjectArray JNICALL Java_com_minimal_uvccamera_UVCCamera_enumerateCameraFormats
+        (JNIEnv *env, jobject obj, jlong cameraPtr) {
+    uvc_camera_t *uvc_camera = (uvc_camera_t *)(intptr_t)cameraPtr;
+    if (!uvc_camera || !uvc_camera->camera_deviceHandle) {
+        LOGE("enumerateCameraFormats: Invalid camera pointer");
+        return NULL;
+    }
+
+    uvc_device_handle_t *devh = uvc_camera->camera_deviceHandle;
+    uvc_streaming_interface_t *stream_if;
+    uvc_format_desc_t *format_desc;
+    uvc_frame_desc_t *frame_desc;
+    
+    // Count formats
+    int format_count = 0;
+    DL_FOREACH(devh->info->stream_ifs, stream_if) {
+        DL_FOREACH(stream_if->format_descs, format_desc) {
+            format_count++;
+        }
+    }
+    
+    if (format_count == 0) {
+        LOGE("enumerateCameraFormats: No formats found");
+        return NULL;
+    }
+    
+    // Get Java classes and method IDs
+    jclass formatInfoClass = (*env)->FindClass(env, "com/minimal/uvccamera/CameraFormatInfo");
+    jclass frameInfoClass = (*env)->FindClass(env, "com/minimal/uvccamera/CameraFrameInfo");
+    
+    if (!formatInfoClass || !frameInfoClass) {
+        LOGE("enumerateCameraFormats: Cannot find Java classes");
+        return NULL;
+    }
+    
+    jmethodID formatConstructor = (*env)->GetMethodID(env, formatInfoClass, "<init>", 
+                                                       "(ILjava/lang/String;I[Lcom/minimal/uvccamera/CameraFrameInfo;)V");
+    jmethodID frameConstructor = (*env)->GetMethodID(env, frameInfoClass, "<init>", "(III)V");
+    
+    if (!formatConstructor || !frameConstructor) {
+        LOGE("enumerateCameraFormats: Cannot find constructors");
+        return NULL;
+    }
+    
+    // Create format info array
+    jobjectArray formatArray = (*env)->NewObjectArray(env, format_count, formatInfoClass, NULL);
+    
+    int format_idx = 0;
+    DL_FOREACH(devh->info->stream_ifs, stream_if) {
+        DL_FOREACH(stream_if->format_descs, format_desc) {
+            // Count frames for this format
+            int frame_count = 0;
+            DL_FOREACH(format_desc->frame_descs, frame_desc) {
+                frame_count++;
+            }
+            
+            // Determine format name from GUID
+            const char *format_name = "UNKNOWN";
+            // MJPEG GUID: 4D 4A 50 47 00 00 10 00 80 00 00 AA 00 38 9B 71
+            if (memcmp(format_desc->guidFormat, "\x4D\x4A\x50\x47", 4) == 0) {
+                format_name = "MJPEG";
+            }
+            // YUY2 GUID: 59 55 59 32 00 00 10 00 80 00 00 AA 00 38 9B 71
+            else if (memcmp(format_desc->guidFormat, "\x59\x55\x59\x32", 4) == 0) {
+                format_name = "YUY2";
+            }
+            // NV12 GUID: 4E 56 31 32 00 00 10 00 80 00 00 AA 00 38 9B 71
+            else if (memcmp(format_desc->guidFormat, "\x4E\x56\x31\x32", 4) == 0) {
+                format_name = "NV12";
+            }
+            // UYVY GUID: 55 59 56 59 00 00 10 00 80 00 00 AA 00 38 9B 71
+            else if (memcmp(format_desc->guidFormat, "\x55\x59\x56\x59", 4) == 0) {
+                format_name = "UYVY";
+            }
+            
+            LOGD("Format %d: %s (index=%d, frames=%d)", format_idx, format_name, 
+                 format_desc->bFormatIndex, frame_count);
+            
+            // Create frame array for this format
+            jobjectArray frameArray = (*env)->NewObjectArray(env, frame_count, frameInfoClass, NULL);
+            
+            int frame_idx = 0;
+            DL_FOREACH(format_desc->frame_descs, frame_desc) {
+                jobject frameObj = (*env)->NewObject(env, frameInfoClass, frameConstructor,
+                                                      (jint)frame_desc->bFrameIndex,
+                                                      (jint)frame_desc->wWidth,
+                                                      (jint)frame_desc->wHeight);
+                
+                // Set frame descriptor fields using reflection
+                jfieldID field;
+                field = (*env)->GetFieldID(env, frameInfoClass, "dwMinBitRate", "J");
+                if (field) (*env)->SetLongField(env, frameObj, field, (jlong)frame_desc->dwMinBitRate);
+                
+                field = (*env)->GetFieldID(env, frameInfoClass, "dwMaxBitRate", "J");
+                if (field) (*env)->SetLongField(env, frameObj, field, (jlong)frame_desc->dwMaxBitRate);
+                
+                field = (*env)->GetFieldID(env, frameInfoClass, "dwMaxVideoFrameBufferSize", "J");
+                if (field) (*env)->SetLongField(env, frameObj, field, (jlong)frame_desc->dwMaxVideoFrameBufferSize);
+                
+                field = (*env)->GetFieldID(env, frameInfoClass, "dwDefaultFrameInterval", "J");
+                if (field) (*env)->SetLongField(env, frameObj, field, (jlong)frame_desc->dwDefaultFrameInterval);
+                
+                field = (*env)->GetFieldID(env, frameInfoClass, "dwMinFrameInterval", "J");
+                if (field) (*env)->SetLongField(env, frameObj, field, (jlong)frame_desc->dwMinFrameInterval);
+                
+                field = (*env)->GetFieldID(env, frameInfoClass, "dwMaxFrameInterval", "J");
+                if (field) (*env)->SetLongField(env, frameObj, field, (jlong)frame_desc->dwMaxFrameInterval);
+                
+                field = (*env)->GetFieldID(env, frameInfoClass, "dwFrameIntervalStep", "J");
+                if (field) (*env)->SetLongField(env, frameObj, field, (jlong)frame_desc->dwFrameIntervalStep);
+                
+                field = (*env)->GetFieldID(env, frameInfoClass, "bFrameIntervalType", "I");
+                if (field) (*env)->SetIntField(env, frameObj, field, (jint)frame_desc->bFrameIntervalType);
+                
+                (*env)->SetObjectArrayElement(env, frameArray, frame_idx, frameObj);
+                (*env)->DeleteLocalRef(env, frameObj);
+                
+                LOGD("  Frame %d: %dx%d (index=%d, default_interval=%u)", frame_idx,
+                     frame_desc->wWidth, frame_desc->wHeight, 
+                     frame_desc->bFrameIndex, frame_desc->dwDefaultFrameInterval);
+                
+                frame_idx++;
+            }
+            
+            // Create format info object
+            jstring formatStr = (*env)->NewStringUTF(env, format_name);
+            jobject formatObj = (*env)->NewObject(env, formatInfoClass, formatConstructor,
+                                                  (jint)format_desc->bFormatIndex,
+                                                  formatStr,
+                                                  (jint)format_desc->bDefaultFrameIndex,
+                                                  frameArray);
+            
+            (*env)->SetObjectArrayElement(env, formatArray, format_idx, formatObj);
+            (*env)->DeleteLocalRef(env, formatObj);
+            (*env)->DeleteLocalRef(env, formatStr);
+            (*env)->DeleteLocalRef(env, frameArray);
+            
+            format_idx++;
+        }
+    }
+    
+    (*env)->DeleteLocalRef(env, formatInfoClass);
+    (*env)->DeleteLocalRef(env, frameInfoClass);
+    
+    return formatArray;
+}
+
 // Init SurfaceView for Service
 JNIEXPORT void JNICALL Java_humer_UvcCamera_StartIsoStreamActivityUvc_JniPrepairStreamOverSurfaceUVC
         (JNIEnv *env, jobject obj) {

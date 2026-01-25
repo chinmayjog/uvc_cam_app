@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
     private int frameIndex = 1;        // Default, will be auto-detected
     private int frameInterval = 0;     // Will be auto-detected from camera
     private int maxPacketSize = 0;     // Will be read from USB endpoint
+    private int dwMaxPayloadTransferSize = 0;  // Camera's negotiated max payload (from UVC PROBE)
     private int streamingAltSetting = 1;
     private int streamingInterfaceNumber = 1;
     private String videoFormat = "UNKNOWN"; // Will be detected
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
     private Handler mainHandler;
     
     // Native method to set camera values directly using C function
-    private native int setNativeValues(long cameraPtr, int fd, 
+    public static native int setNativeValues(long cameraPtr, int fd, 
                                       int packetsPerRequest, int maxPacketSize, int activeUrbs,
                                       int camStreamingAltSetting, int camFormatIndex,
                                       int camFrameIndex, int camFrameInterval,
@@ -408,72 +409,124 @@ public class MainActivity extends AppCompatActivity {
             
             new Thread(() -> {
                 try {
-                    // Let native code handle all USB descriptor parsing and detection
-                    // This matches the reference app architecture
+                    // Initialize streaming first (opens libusb device)
+                    int result = initStreamingParms(mNativePtr, fd);
+                    Log.d(TAG, "initStreamingParms result: " + result);
                     
-                    // Try multiple format options with fallbacks
-                    // Priority: Common supported formats first, then higher resolutions
+                    if (result != 0) {
+                        Log.e(TAG, "Failed to initialize streaming parameters");
+                        mainHandler.post(() -> updateStatus("Failed to initialize device"));
+                        return;
+                    }
+                    
+                    // Get device info
+                    result = listDeviceUvc(mNativePtr, fd);
+                    Log.d(TAG, "listDeviceUvc result: " + result);
+                    
+                    if (result != 0) {
+                        Log.e(TAG, "Failed to list device info");
+                        mainHandler.post(() -> updateStatus("Failed to get device info"));
+                        return;
+                    }
+                    
+                    // Now enumerate actual camera capabilities from UVC descriptors
+                    Log.d(TAG, "Attempting to enumerate camera capabilities from UVC descriptors");
                     boolean formatConfigured = false;
                     
-                    // First try: MJPEG at 640x480 (VGA - most commonly supported)
-                    if (tryConfigureFormat("MJPEG", 640, 480, 1, 1)) {
-                        formatConfigured = true;
-                        Log.d(TAG, "Successfully configured 640x480 MJPEG format");
+                    try {
+                        UVCCamera uvcCamera = new UVCCamera();
+                        CameraFormatInfo[] formats = uvcCamera.enumerateCameraFormats(mNativePtr);
+                        
+                        if (formats != null && formats.length > 0) {
+                            Log.d(TAG, "Camera supports " + formats.length + " formats");
+                            
+                            // Prefer MJPEG, fall back to YUY2
+                            CameraFormatInfo selectedFormat = null;
+                            for (CameraFormatInfo fmt : formats) {
+                                if ("MJPEG".equals(fmt.formatName)) {
+                                    selectedFormat = fmt;
+                                    break;
+                                }
+                            }
+                            
+                            if (selectedFormat == null) {
+                                selectedFormat = formats[0];  // Use first available
+                            }
+                            
+                            if (selectedFormat != null && selectedFormat.supportedFrames.length > 0) {
+                                // Use camera's first/best frame
+                                CameraFrameInfo selectedFrame = selectedFormat.supportedFrames[0];
+                                
+                                // Prefer common resolutions
+                                for (CameraFrameInfo frame : selectedFormat.supportedFrames) {
+                                    if ((frame.width == 640 && frame.height == 480) ||
+                                        (frame.width == 1280 && frame.height == 720) ||
+                                        (frame.width == 1920 && frame.height == 1080)) {
+                                        selectedFrame = frame;
+                                        break;
+                                    }
+                                }
+                                
+                                // Use negotiated values
+                                formatIndex = selectedFormat.formatIndex;
+                                frameIndex = selectedFrame.frameIndex;
+                                imageWidth = selectedFrame.width;
+                                imageHeight = selectedFrame.height;
+                                frameInterval = (int) selectedFrame.dwDefaultFrameInterval;
+                                videoFormat = selectedFormat.formatName;
+                                maxPacketSize = (int) selectedFrame.dwMaxVideoFrameBufferSize;
+                                
+                                Log.d(TAG, "Enumerated format: " + videoFormat + " (" + imageWidth + "x" + imageHeight + ")");
+                                formatConfigured = true;
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.w(TAG, "Enumeration failed: " + e.getMessage());
                     }
                     
-                    // Second try: MJPEG at 800x600
-                    if (!formatConfigured && tryConfigureFormat("MJPEG", 800, 600, 1, 1)) {
-                        formatConfigured = true;
-                        Log.d(TAG, "Successfully configured 800x600 MJPEG format");
-                    }
-                    
-                    // Third try: MJPEG at 1280x720 (HD)
-                    if (!formatConfigured && tryConfigureFormat("MJPEG", 1280, 720, 1, 1)) {
-                        formatConfigured = true;
-                        Log.d(TAG, "Successfully configured 720p MJPEG format");
-                    }
-                    
-                    // Fourth try: MJPEG at 1920x1080 (Full HD)
-                    if (!formatConfigured && tryConfigureFormat("MJPEG", 1920, 1080, 1, 1)) {
-                        formatConfigured = true;
-                        Log.d(TAG, "Successfully configured 1080p MJPEG format");
-                    }
-                    
-                    // Fifth try: YUY2 (YUV 4:2:2 uncompressed) at 640x480
-                    if (!formatConfigured && tryConfigureFormat("YUY2", 640, 480, 1, 1)) {
-                        formatConfigured = true;
-                        Log.d(TAG, "MJPEG not supported, using 640x480 YUY2 format");
-                    }
-                    
-                    // Sixth try: YUY2 at 800x600
-                    if (!formatConfigured && tryConfigureFormat("YUY2", 800, 600, 1, 1)) {
-                        formatConfigured = true;
-                        Log.d(TAG, "Using 800x600 YUY2 format");
-                    }
-                    
-                    // Seventh try: Lower resolution MJPEG (320x240)
-                    if (!formatConfigured && tryConfigureFormat("MJPEG", 320, 240, 1, 1)) {
-                        formatConfigured = true;
-                        Log.d(TAG, "Using lower resolution 320x240 MJPEG");
-                    }
-                    
-                    // Eighth try: Lower resolution YUY2
-                    if (!formatConfigured && tryConfigureFormat("YUY2", 320, 240, 1, 1)) {
-                        formatConfigured = true;
-                        Log.d(TAG, "Using lower resolution 320x240 YUY2");
-                    }
-                    
-                    // Fallback: Use MJPEG defaults anyway and let native code handle errors
+                    // Fallback if enumeration didn't work
                     if (!formatConfigured) {
-                        Log.w(TAG, "Could not verify format support, using MJPEG defaults");
-                        imageWidth = 640;
-                        imageHeight = 480;
-                        formatIndex = 1;
-                        frameIndex = 1;
-                        frameInterval = 333333; // ~30 fps
-                        maxPacketSize = 3072;
-                        streamingAltSetting = 1;
-                        videoFormat = "MJPEG";
+                        Log.d(TAG, "Descriptor enumeration didn't provide config, trying hardcoded formats");
+                        
+                        // Try multiple format options with fallbacks
+                        if (tryConfigureFormat("MJPEG", 640, 480, 1, 1)) {
+                            formatConfigured = true;
+                            Log.d(TAG, "Successfully configured 640x480 MJPEG format");
+                        } else if (tryConfigureFormat("MJPEG", 800, 600, 1, 1)) {
+                            formatConfigured = true;
+                            Log.d(TAG, "Successfully configured 800x600 MJPEG format");
+                        } else if (tryConfigureFormat("MJPEG", 1280, 720, 1, 1)) {
+                            formatConfigured = true;
+                            Log.d(TAG, "Successfully configured 720p MJPEG format");
+                        } else if (tryConfigureFormat("MJPEG", 1920, 1080, 1, 1)) {
+                            formatConfigured = true;
+                            Log.d(TAG, "Successfully configured 1080p MJPEG format");
+                        } else if (tryConfigureFormat("YUY2", 640, 480, 1, 1)) {
+                            formatConfigured = true;
+                            Log.d(TAG, "MJPEG not supported, using 640x480 YUY2 format");
+                        } else if (tryConfigureFormat("YUY2", 800, 600, 1, 1)) {
+                            formatConfigured = true;
+                            Log.d(TAG, "Using 800x600 YUY2 format");
+                        } else if (tryConfigureFormat("MJPEG", 320, 240, 1, 1)) {
+                            formatConfigured = true;
+                            Log.d(TAG, "Using lower resolution 320x240 MJPEG");
+                        } else if (tryConfigureFormat("YUY2", 320, 240, 1, 1)) {
+                            formatConfigured = true;
+                            Log.d(TAG, "Using lower resolution 320x240 YUY2");
+                        }
+                        
+                        // Final fallback
+                        if (!formatConfigured) {
+                            Log.w(TAG, "Could not verify format support, using MJPEG defaults");
+                            imageWidth = 640;
+                            imageHeight = 480;
+                            formatIndex = 1;
+                            frameIndex = 1;
+                            frameInterval = 333333; // ~30 fps
+                            maxPacketSize = 3072;
+                            streamingAltSetting = 1;
+                            videoFormat = "MJPEG";
+                        }
                     }
                     
                     Log.d(TAG, "Final configuration:");
@@ -483,11 +536,24 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "  Frame interval: " + frameInterval);
                     Log.d(TAG, "  Max packet size: " + maxPacketSize);
                     
+                    // Calculate optimal buffer parameters based on camera negotiation
+                    int packetsPerRequest = calculateOptimalPacketsPerRequest(
+                            imageWidth, imageHeight, frameInterval, videoFormat, 
+                            dwMaxPayloadTransferSize);
+                    int activeUrbs = calculateOptimalActiveUrbs(
+                            imageWidth, imageHeight, frameInterval, videoFormat, 
+                            packetsPerRequest, dwMaxPayloadTransferSize);
+                    
+                    Log.d(TAG, "Calculated streaming parameters:");
+                    Log.d(TAG, "  packetsPerRequest: " + packetsPerRequest);
+                    Log.d(TAG, "  activeUrbs: " + activeUrbs);
+                    Log.d(TAG, "  dwMaxPayloadTransferSize: " + dwMaxPayloadTransferSize);
+                    
                     // Set native values in camera structure
-                    int result = setNativeValues(mNativePtr, fd,
-                            8, // packetsPerRequest
+                    result = setNativeValues(mNativePtr, fd,
+                            packetsPerRequest,
                             maxPacketSize,
-                            5, // activeUrbs
+                            activeUrbs,
                             streamingAltSetting,
                             formatIndex,
                             frameIndex,
@@ -502,26 +568,6 @@ public class MainActivity extends AppCompatActivity {
                             0  // lowAndroid
                     );
                     Log.d(TAG, "setNativeValues result: " + result);
-                    
-                    // Initialize streaming parameters (wraps FD with libusb, opens device)
-                    result = initStreamingParms(mNativePtr, fd);
-                    Log.d(TAG, "initStreamingParms result: " + result);
-                    
-                    if (result != 0) {
-                        Log.e(TAG, "Failed to initialize streaming parameters");
-                        mainHandler.post(() -> updateStatus("Failed to initialize device"));
-                        return;
-                    }
-                    
-                    // Important: Call listDeviceUvc to properly initialize device handle
-                    result = listDeviceUvc(mNativePtr, fd);
-                    Log.d(TAG, "listDeviceUvc result: " + result);
-                    
-                    if (result != 0) {
-                        Log.e(TAG, "Failed to list device info");
-                        mainHandler.post(() -> updateStatus("Failed to get device info"));
-                        return;
-                    }
                     
                     mainHandler.post(() -> {
                         updateStatus("Camera ready");
@@ -543,6 +589,11 @@ public class MainActivity extends AppCompatActivity {
             updateStatus("Error: " + e.getMessage());
         }
     }
+    
+    /**
+     * Enumerate actual camera capabilities from UVC descriptors
+     * This replaces hardcoded resolution/format assumptions with real camera data
+     */
     
     /**
      * Try to configure camera with specified format and resolution.
@@ -737,8 +788,8 @@ public class MainActivity extends AppCompatActivity {
                     // Frame size
                     int dwMaxVideoFrameSize = buf.getInt(18);
                     
-                    // Bandwidth
-                    int dwMaxPayloadTransferSize = buf.getInt(22);
+                    // Bandwidth - Camera's max payload size per transfer
+                    dwMaxPayloadTransferSize = buf.getInt(22);
                     
                     // Update detected values only if they're valid (non-zero)
                     if (bFormatIndex > 0) {
@@ -962,5 +1013,92 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "All permissions granted");
             }
         }
+    }
+    
+    /**
+     * Calculate optimal packetsPerRequest based on camera's negotiated parameters.
+     * This ensures the buffer size doesn't overflow when handling USB transfers.
+     *
+     * @param width Image width in pixels
+     * @param height Image height in pixels
+     * @param frameInterval Frame interval in 100ns units
+     * @param format Video format (MJPEG, YUY2, etc)
+     * @param dwMaxPayloadTransferSize Camera's max payload size from USB negotiation
+     * @return Recommended packetsPerRequest value
+     */
+    private int calculateOptimalPacketsPerRequest(int width, int height, int frameInterval, 
+                                                   String format, int dwMaxPayloadTransferSize) {
+        // Ensure we have valid camera payload size
+        if (dwMaxPayloadTransferSize <= 0) {
+            dwMaxPayloadTransferSize = 3072; // fallback to common value
+        }
+        
+        // Calculate frame size based on format
+        long frameSize;
+        if ("MJPEG".equals(format)) {
+            // MJPEG is highly variable, estimate at 30-50% of resolution
+            frameSize = (long) width * height * 3 / 2;
+        } else if ("YUY2".equals(format) || "UYVY".equals(format)) {
+            // YUY2/UYVY is 16-bit per 2 pixels
+            frameSize = (long) width * height * 2;
+        } else if ("NV12".equals(format) || "NV21".equals(format)) {
+            // NV12/NV21 is 12 bits per pixel
+            frameSize = (long) width * height * 3 / 2;
+        } else {
+            // Default to YUY2 estimate
+            frameSize = (long) width * height * 2;
+        }
+        
+        // Calculate FPS from frame interval (100ns units)
+        int fps = frameInterval > 0 ? (int)(10000000 / frameInterval) : 30;
+        
+        // Target buffer size: enough for 2 frames at current resolution
+        long targetBufferPerFrame = frameSize;
+        
+        // Calculate packets needed per frame
+        int packetsPerFrame = (int) Math.ceil((double) targetBufferPerFrame / dwMaxPayloadTransferSize);
+        
+        // Clamp packetsPerRequest between reasonable values
+        // Min: 2 packets, Max: 32 packets
+        int packetsPerRequest = Math.max(2, Math.min(packetsPerFrame / 2, 32));
+        
+        Log.d(TAG, String.format("Buffer calc: frame=%d bytes, payload=%d, packets/frame=%d, packets/req=%d",
+                targetBufferPerFrame, dwMaxPayloadTransferSize, packetsPerFrame, packetsPerRequest));
+        
+        return packetsPerRequest;
+    }
+    
+    /**
+     * Calculate optimal activeUrbs based on camera's negotiated parameters.
+     * More URBs = more parallel transfers but higher memory usage.
+     *
+     * @param width Image width in pixels
+     * @param height Image height in pixels
+     * @param frameInterval Frame interval in 100ns units
+     * @param format Video format (MJPEG, YUY2, etc)
+     * @param packetsPerRequest Packets per request (from calculateOptimalPacketsPerRequest)
+     * @param dwMaxPayloadTransferSize Camera's max payload size from USB negotiation
+     * @return Recommended activeUrbs value
+     */
+    private int calculateOptimalActiveUrbs(int width, int height, int frameInterval, String format,
+                                           int packetsPerRequest, int dwMaxPayloadTransferSize) {
+        // Ensure we have valid camera payload size
+        if (dwMaxPayloadTransferSize <= 0) {
+            dwMaxPayloadTransferSize = 3072;
+        }
+        
+        // Calculate total transfer buffer needed per URB
+        long bytesPerUrb = (long) packetsPerRequest * dwMaxPayloadTransferSize;
+        
+        // Target: keep total buffers around 4-8 MB for reasonable memory usage
+        // while maintaining smooth streaming
+        long targetTotalBuffers = 8 * 1024 * 1024; // 8 MB
+        
+        int activeUrbs = (int) Math.max(2, Math.min(targetTotalBuffers / bytesPerUrb, 10));
+        
+        Log.d(TAG, String.format("URBs calc: bytes/urb=%d, target_total=%d, activeUrbs=%d",
+                bytesPerUrb, targetTotalBuffers, activeUrbs));
+        
+        return activeUrbs;
     }
 }

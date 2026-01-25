@@ -1057,12 +1057,16 @@ static inline void _uvc_process_payload_iso(uvc_stream_handle_t *strmh, struct l
 			// from "if (pkt->actual_length - header_len > 0)"
 			if (LIKELY(pkt->actual_length > header_len)) {
 				const size_t odd_bytes = pkt->actual_length - header_len;
-				if (!(strmh->got_bytes + odd_bytes < strmh->size_buf))	LOGDEB("strmh->got_bytes + odd_bytes = %d", strmh->got_bytes + odd_bytes);
-				assert(strmh->got_bytes + odd_bytes < strmh->size_buf);
-				assert(strmh->outbuf);
-				assert(pktbuf);
-				memcpy(strmh->outbuf + strmh->got_bytes, pktbuf + header_len, odd_bytes);
-				strmh->got_bytes += odd_bytes;
+				if (LIKELY(strmh->got_bytes + odd_bytes <= strmh->size_buf)) {
+					assert(strmh->outbuf);
+					assert(pktbuf);
+					memcpy(strmh->outbuf + strmh->got_bytes, pktbuf + header_len, odd_bytes);
+					strmh->got_bytes += odd_bytes;
+				} else {
+					strmh->bfh_err |= UVC_STREAM_ERR;
+					LOGDEB("\nstrmh->got_bytes + odd_bytes = %d\nstrmh->size_buf = %d\nERROR !!!! Buffer overflow in ISO transfer\n",
+						   (strmh->got_bytes + odd_bytes), strmh->size_buf);
+				}
 			}
 #ifdef USE_EOF
 			if ((pktbuf[1] & UVC_STREAM_EOF) && strmh->got_bytes != 0) {
@@ -1283,11 +1287,16 @@ static void _uvc_iso_callback(struct libusb_transfer *transfer) {
 				// from "if (pkt->actual_length - header_len > 0)"
 				if (LIKELY(pkt->actual_length > header_len)) {
 					const size_t odd_bytes = pkt->actual_length - header_len;
-					assert(strmh->got_bytes + odd_bytes < strmh->size_buf);
-					assert(strmh->outbuf);
-					assert(pktbuf);
-					memcpy(strmh->outbuf + strmh->got_bytes, pktbuf + header_len, odd_bytes);
-					strmh->got_bytes += odd_bytes;
+					if (LIKELY(strmh->got_bytes + odd_bytes <= strmh->size_buf)) {
+						assert(strmh->outbuf);
+						assert(pktbuf);
+						memcpy(strmh->outbuf + strmh->got_bytes, pktbuf + header_len, odd_bytes);
+						strmh->got_bytes += odd_bytes;
+					} else {
+						strmh->bfh_err |= UVC_STREAM_ERR;
+						LOGDEB("\nstrmh->got_bytes + odd_bytes = %d\nstrmh->size_buf = %d\nERROR !!!! Buffer overflow in ISO transfer\n",
+							   (strmh->got_bytes + odd_bytes), strmh->size_buf);
+					}
 				}
 #ifdef USE_EOF
 				if ((pktbuf[1] & STREAM_HEADER_BFH_EOF) && strmh->got_bytes != 0) {
