@@ -103,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
     public static native int listDeviceUvc(long cameraPtr, int fd);
     public static native void resetCameraState();
     public static native void closeCameraDevice(long cameraPtr);
+    public static native boolean isCameraDeviceClosed(long cameraPtr);
+    public static native boolean isStreamStopped(long cameraPtr);
     
     static {
         try {
@@ -409,18 +411,11 @@ public class MainActivity extends AppCompatActivity {
             
             new Thread(() -> {
                 try {
-                    // Initialize streaming first (opens libusb device)
-                    int result = initStreamingParms(mNativePtr, fd);
-                    Log.d(TAG, "initStreamingParms result: " + result);
-                    
-                    if (result != 0) {
-                        Log.e(TAG, "Failed to initialize streaming parameters");
-                        mainHandler.post(() -> updateStatus("Failed to initialize device"));
-                        return;
-                    }
+                    // Don't call initStreamingParms yet - we need to negotiate parameters first
+                    // It will be called after setNativeValues with the correct negotiated values
                     
                     // Get device info
-                    result = listDeviceUvc(mNativePtr, fd);
+                    int result = listDeviceUvc(mNativePtr, fd);
                     Log.d(TAG, "listDeviceUvc result: " + result);
                     
                     if (result != 0) {
@@ -568,6 +563,19 @@ public class MainActivity extends AppCompatActivity {
                             0  // lowAndroid
                     );
                     Log.d(TAG, "setNativeValues result: " + result);
+                    
+                    // Now that native values are set, initialize streaming with the negotiated parameters
+                    result = initStreamingParms(mNativePtr, fd);
+                    Log.d(TAG, "initStreamingParms result: " + result);
+                    
+                    if (result != 0) {
+                        Log.e(TAG, "Failed to initialize streaming parameters with negotiated values");
+                        mainHandler.post(() -> {
+                            updateStatus("Failed to initialize device");
+                            startButton.setEnabled(false);
+                        });
+                        return;
+                    }
                     
                     mainHandler.post(() -> {
                         updateStatus("Camera ready");

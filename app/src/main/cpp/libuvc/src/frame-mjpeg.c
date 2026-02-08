@@ -245,9 +245,10 @@ uvc_error_t uvc_mjpeg2bgr(uvc_frame_t *in, uvc_frame_t *out) {
 	struct error_mgr jerr;
 	size_t lines_read;
 
-	int num_scanlines, i;
+	int num_scanlines, i, j;
 	lines_read = 0;
-	unsigned char *buffer[MAX_READLINE];
+	unsigned char *rgb_buffer[MAX_READLINE];
+	unsigned char *temp_rgb_line;
 
 	out->actual_bytes = 0;	// XXX
 	if (UNLIKELY(in->frame_format != UVC_FRAME_FORMAT_MJPEG))
@@ -280,30 +281,57 @@ uvc_error_t uvc_mjpeg2bgr(uvc_frame_t *in, uvc_frame_t *out) {
 		insert_huff_tables(&dinfo);
 	}
 
-	dinfo.out_color_space = JCS_EXT_BGR;
+	// Use JCS_RGB instead of JCS_EXT_BGR for libjpeg-9 compatibility
+	dinfo.out_color_space = JCS_RGB;
 	dinfo.dct_method = JDCT_IFAST;
 
 	jpeg_start_decompress(&dinfo);
 
-	// local copy
+	// Allocate temporary buffer for RGB scanlines
+	temp_rgb_line = (unsigned char*)malloc(in->width * 3 * MAX_READLINE);
+	if (!temp_rgb_line) {
+		jpeg_destroy_decompress(&dinfo);
+		return UVC_ERROR_NO_MEM;
+	}
+
+	// Set up buffer pointers for RGB data
+	for (i = 0; i < MAX_READLINE; i++) {
+		rgb_buffer[i] = temp_rgb_line + (i * in->width * 3);
+	}
+
 	uint8_t *data = out->data;
 	const int out_step = out->step;
 
 	if (LIKELY(dinfo.output_height == out->height)) {
 		for (; dinfo.output_scanline < dinfo.output_height ;) {
-			buffer[0] = data + (lines_read) * out_step;
-			for (i = 1; i < MAX_READLINE; i++)
-				buffer[i] = buffer[i-1] + out_step;
-			num_scanlines = jpeg_read_scanlines(&dinfo, buffer, MAX_READLINE);
+			num_scanlines = jpeg_read_scanlines(&dinfo, rgb_buffer, MAX_READLINE);
+
+			// Convert RGB to BGR manually
+			for (j = 0; j < num_scanlines; j++) {
+				uint8_t *rgb_src = rgb_buffer[j];
+				uint8_t *bgr_dest = data + (lines_read + j) * out_step;
+
+				for (i = 0; i < in->width; i++) {
+					uint8_t r = *rgb_src++;
+					uint8_t g = *rgb_src++;
+					uint8_t b = *rgb_src++;
+					*bgr_dest++ = b;  // B
+					*bgr_dest++ = g;  // G
+					*bgr_dest++ = r;  // R
+				}
+			}
 			lines_read += num_scanlines;
 		}
 		out->actual_bytes = in->width * in->height * 3;	// XXX
 	}
+
+	free(temp_rgb_line);
 	jpeg_finish_decompress(&dinfo);
 	jpeg_destroy_decompress(&dinfo);
 	return lines_read == out->height ? UVC_SUCCESS : UVC_ERROR_OTHER;	// XXX
 
 fail:
+	if (temp_rgb_line) free(temp_rgb_line);
 	jpeg_destroy_decompress(&dinfo);
 	return UVC_ERROR_OTHER+1;
 }
@@ -319,9 +347,10 @@ uvc_error_t uvc_mjpeg2rgb565(uvc_frame_t *in, uvc_frame_t *out) {
 	struct error_mgr jerr;
 	size_t lines_read;
 
-	int num_scanlines, i;
+	int num_scanlines, i, j;
 	lines_read = 0;
-	unsigned char *buffer[MAX_READLINE];
+	unsigned char *rgb_buffer[MAX_READLINE];
+	unsigned char *temp_rgb_line;
 
 	out->actual_bytes = 0;	// XXX
 	if (UNLIKELY(in->frame_format != UVC_FRAME_FORMAT_MJPEG))
@@ -354,30 +383,57 @@ uvc_error_t uvc_mjpeg2rgb565(uvc_frame_t *in, uvc_frame_t *out) {
 		insert_huff_tables(&dinfo);
 	}
 
-	dinfo.out_color_space = JCS_RGB565;
+	// Use JCS_RGB instead of JCS_RGB565 for libjpeg-9 compatibility
+	dinfo.out_color_space = JCS_RGB;
 	dinfo.dct_method = JDCT_IFAST;
 
 	jpeg_start_decompress(&dinfo);
 
-	// local copy
+	// Allocate temporary buffer for RGB scanlines
+	temp_rgb_line = (unsigned char*)malloc(in->width * 3 * MAX_READLINE);
+	if (!temp_rgb_line) {
+		jpeg_destroy_decompress(&dinfo);
+		return UVC_ERROR_NO_MEM;
+	}
+
+	// Set up buffer pointers for RGB data
+	for (i = 0; i < MAX_READLINE; i++) {
+		rgb_buffer[i] = temp_rgb_line + (i * in->width * 3);
+	}
+
 	uint8_t *data = out->data;
 	const int out_step = out->step;
 
 	if (LIKELY(dinfo.output_height == out->height)) {
 		for (; dinfo.output_scanline < dinfo.output_height ;) {
-			buffer[0] = data + (lines_read) * out_step;
-			for (i = 1; i < MAX_READLINE; i++)
-				buffer[i] = buffer[i-1] + out_step;
-			num_scanlines = jpeg_read_scanlines(&dinfo, buffer, MAX_READLINE);
+			num_scanlines = jpeg_read_scanlines(&dinfo, rgb_buffer, MAX_READLINE);
+
+			// Convert RGB to RGB565 manually
+			// RGB565 format: RRRRR GGGGGG BBBBB (5 bits R, 6 bits G, 5 bits B)
+			for (j = 0; j < num_scanlines; j++) {
+				uint8_t *rgb_src = rgb_buffer[j];
+				uint16_t *rgb565_dest = (uint16_t*)(data + (lines_read + j) * out_step);
+
+				for (i = 0; i < in->width; i++) {
+					uint8_t r = *rgb_src++;
+					uint8_t g = *rgb_src++;
+					uint8_t b = *rgb_src++;
+					// Convert 8-bit RGB to 5-6-5 format
+					*rgb565_dest++ = ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3);
+				}
+			}
 			lines_read += num_scanlines;
 		}
 		out->actual_bytes = in->width * in->height * 2;	// XXX
 	}
+
+	free(temp_rgb_line);
 	jpeg_finish_decompress(&dinfo);
 	jpeg_destroy_decompress(&dinfo);
 	return lines_read == out->height ? UVC_SUCCESS : UVC_ERROR_OTHER;	// XXX
 
 fail:
+	if (temp_rgb_line) free(temp_rgb_line);
 	jpeg_destroy_decompress(&dinfo);
 	return UVC_ERROR_OTHER+1;
 }
@@ -392,13 +448,11 @@ uvc_error_t uvc_mjpeg2rgbx(uvc_frame_t *in, uvc_frame_t *out) {
 	struct jpeg_decompress_struct dinfo;
 	struct error_mgr jerr;
 	size_t lines_read;
-	// local copy
-	uint8_t *data = out->data;
-	const int out_step = out->step;
 
-	int num_scanlines, i;
+	int num_scanlines, i, j;
 	lines_read = 0;
-	unsigned char *buffer[MAX_READLINE];
+	unsigned char *rgb_buffer[MAX_READLINE];
+	unsigned char *temp_rgb_line;
 
 	out->actual_bytes = 0;	// XXX
 	if (UNLIKELY(in->frame_format != UVC_FRAME_FORMAT_MJPEG))
@@ -431,26 +485,55 @@ uvc_error_t uvc_mjpeg2rgbx(uvc_frame_t *in, uvc_frame_t *out) {
 		insert_huff_tables(&dinfo);
 	}
 
-	dinfo.out_color_space = JCS_EXT_RGBA;
+	// Use JCS_RGB instead of JCS_EXT_RGBA for libjpeg-9 compatibility
+	dinfo.out_color_space = JCS_RGB;
 	dinfo.dct_method = JDCT_IFAST;
 
 	jpeg_start_decompress(&dinfo);
 
+	// Allocate temporary buffer for RGB scanlines
+	temp_rgb_line = (unsigned char*)malloc(in->width * 3 * MAX_READLINE);
+	if (!temp_rgb_line) {
+		jpeg_destroy_decompress(&dinfo);
+		return UVC_ERROR_NO_MEM;
+	}
+
+	// Set up buffer pointers for RGB data
+	for (i = 0; i < MAX_READLINE; i++) {
+		rgb_buffer[i] = temp_rgb_line + (i * in->width * 3);
+	}
+
 	if (LIKELY(dinfo.output_height == out->height)) {
+		uint8_t *data = out->data;
+		const int out_step = out->step;
+
 		for (; dinfo.output_scanline < dinfo.output_height ;) {
-			buffer[0] = data + (lines_read) * out_step;
-			for (i = 1; i < MAX_READLINE; i++)
-				buffer[i] = buffer[i-1] + out_step;
-			num_scanlines = jpeg_read_scanlines(&dinfo, buffer, MAX_READLINE);
+			num_scanlines = jpeg_read_scanlines(&dinfo, rgb_buffer, MAX_READLINE);
+
+			// Convert RGB to RGBX manually
+			for (j = 0; j < num_scanlines; j++) {
+				uint8_t *rgb_src = rgb_buffer[j];
+				uint8_t *rgbx_dest = data + (lines_read + j) * out_step;
+
+				for (i = 0; i < in->width; i++) {
+					*rgbx_dest++ = *rgb_src++;  // R
+					*rgbx_dest++ = *rgb_src++;  // G
+					*rgbx_dest++ = *rgb_src++;  // B
+					*rgbx_dest++ = 0xFF;        // X (alpha)
+				}
+			}
 			lines_read += num_scanlines;
 		}
 		out->actual_bytes = in->width * in->height * 4;	// XXX
 	}
+
+	free(temp_rgb_line);
 	jpeg_finish_decompress(&dinfo);
 	jpeg_destroy_decompress(&dinfo);
 	return lines_read == out->height ? UVC_SUCCESS : UVC_ERROR_OTHER;	// XXX
 
 fail:
+	if (temp_rgb_line) free(temp_rgb_line);
 	jpeg_destroy_decompress(&dinfo);
 	return UVC_ERROR_OTHER+1;
 }

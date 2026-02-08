@@ -233,6 +233,8 @@ uvc_error_t uvc_get_device_with_fd(uvc_context_t *ctx, uvc_device_t **device,
 	uvc_device_handle_t *internal_devh;
 	internal_devh = calloc(1, sizeof(*internal_devh));
 
+	__android_log_print(ANDROID_LOG_INFO, TAG,
+						"uvc_get_device_with_fd: wrapping FD=%d", fd);
 
 	ctx->own_usb_ctx = 1;
 	int ret = libusb_wrap_sys_device(ctx->usb_ctx, (intptr_t)fd, &internal_devh->usb_devh);
@@ -245,10 +247,19 @@ uvc_error_t uvc_get_device_with_fd(uvc_context_t *ctx, uvc_device_t **device,
 							"libusb_wrap_sys_device returned invalid handle\n");
 		return -3;
 	}
+	
+	// Log which device was actually wrapped
+	struct libusb_device *usb_dev = libusb_get_device(internal_devh->usb_devh);
+	if (usb_dev) {
+		struct libusb_device_descriptor desc;
+		libusb_get_device_descriptor(usb_dev, &desc);
+		__android_log_print(ANDROID_LOG_INFO, TAG,
+							"uvc_get_device_with_fd: FD %d wrapped to USB device VID=0x%04x PID=0x%04x",
+							fd, desc.idVendor, desc.idProduct);
+	}
+	
 	//dev->ctx = ctx;
     __android_log_print(ANDROID_LOG_INFO, TAG,"get the device");
-
-    struct libusb_device *usb_dev = libusb_get_device(internal_devh->usb_devh);
 
 
     if (LIKELY(usb_dev)) {

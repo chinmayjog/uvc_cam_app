@@ -82,6 +82,9 @@ public class FaultFormActivity extends AppCompatActivity {
     private volatile boolean streamStarted = false; // true only after PreviewStartStream succeeds
     private volatile boolean capturePending = false;
     private volatile boolean isStopping = false;  // Prevent concurrent stop calls
+    private volatile boolean isInitializing = false;  // Prevent concurrent camera initialization
+    private final Object cameraLock = new Object();  // Lock for camera operations
+    private volatile boolean stepTransitionInProgress = false;  // Prevent surfaceCreated from interfering during step changes
 
     private String[] imagePaths;  // Will be resized after camera count is known
     private String[] notes;  // Will be resized after camera count is known
@@ -157,6 +160,7 @@ public class FaultFormActivity extends AppCompatActivity {
         videoFormat = getIntent().getStringExtra("videoFormat");
         deviceName = getIntent().getStringExtra("deviceName");
         mNativePtr = getIntent().getLongExtra("mNativePtr", 0);
+        Log.d(TAG, "Received mNativePtr from MainActivity: 0x" + Long.toHexString(mNativePtr));
         
             // Get the cached list of all cameras from MainActivity
             allCameraNames = getIntent().getStringArrayExtra("allCameraNames");
@@ -188,8 +192,17 @@ public class FaultFormActivity extends AppCompatActivity {
             @Override
             public void surfaceCreated(@NonNull SurfaceHolder holder) {
                 adjustSurfaceViewSize();
-                if (imagePaths[currentStep] == null && isStreaming == false) {
-                    initCamera(cameraDevice);
+                // Only initialize if:
+                // - No preview image exists for this step
+                // - Not already streaming or initializing
+                // - Not in the middle of a step transition (which will handle camera loading)
+                if (imagePaths[currentStep] == null && !isStreaming && !isInitializing && !stepTransitionInProgress) {
+                    Log.d(TAG, "surfaceCreated: Initializing camera for step " + currentStep);
+                    loadCameraForStep();
+                } else {
+                    Log.d(TAG, "surfaceCreated: Skipping init (imagePath=" + imagePaths[currentStep] + 
+                          ", streaming=" + isStreaming + ", initializing=" + isInitializing + 
+                          ", transition=" + stepTransitionInProgress + ")");
                 }
             }
 
@@ -213,6 +226,26 @@ public class FaultFormActivity extends AppCompatActivity {
         registerReceiver(usbReceiver, filter);
 
         updateStepUi();
+
+        // Find and set the camera device for the first step (don't start streaming yet)
+        // The surfaceCreated callback will handle actual initialization once surface is ready
+        new Thread(() -> {
+            String[] freshCameraList = scanUvcCameras();
+            if (freshCameraList.length > 0) {
+                allCameraNames = freshCameraList;
+                int cameraIndex = currentStep % allCameraNames.length;
+                deviceName = allCameraNames[cameraIndex];
+
+                HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
+                for (UsbDevice device : deviceList.values()) {
+                    if (device.getDeviceName().equals(deviceName)) {
+                        cameraDevice = device;
+                        Log.d(TAG, "Camera device set for step 0: " + deviceName);
+                        break;
+                    }
+                }
+            }
+        }).start();
     }
 
     @Override
@@ -233,19 +266,33 @@ public class FaultFormActivity extends AppCompatActivity {
 
     private void initCamera(UsbDevice device) {
         new Thread(() -> {
+            Log.d(TAG, "initCamera called with device: " + (device != null ? device.getDeviceName() : "null"));
+            synchronized (cameraLock) {
+                // Prevent concurrent initialization
+                if (isInitializing) {
+                    Log.w(TAG, "Camera initialization already in progress, skipping duplicate request");
+                    return;
+                }
+                isInitializing = true;
+            }
+
             try {
                 UsbDevice targetDevice = device;
+                Log.d(TAG, "targetDevice initial: " + (targetDevice != null ? targetDevice.getDeviceName() : "null"));
                 if (targetDevice == null) {
                     // Try to find it by name if device not provided
+                    Log.d(TAG, "targetDevice is null, looking up by deviceName: " + deviceName);
                     HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
                     for (UsbDevice d : deviceList.values()) {
                         if (d.getDeviceName().equals(deviceName)) {
                             targetDevice = d;
+                            Log.d(TAG, "Found device by name: " + targetDevice.getDeviceName());
                             break;
                         }
                     }
                 }
 
+                Log.d(TAG, "targetDevice final: " + (targetDevice != null ? targetDevice.getDeviceName() : "null"));
                 if (targetDevice == null) {
                     mainHandler.post(() -> {
                         Toast.makeText(FaultFormActivity.this, "Camera not found: " + deviceName, Toast.LENGTH_SHORT).show();
@@ -256,6 +303,54 @@ public class FaultFormActivity extends AppCompatActivity {
 
                 cameraDevice = targetDevice;  // Update the field
                 
+                // UNIVERSAL CAMERA INITIALIZATION FLOW:
+                // Same steps for ALL cameras (first, switching, or re-init)
+                
+                // Step 1: Close previous camera BEFORE opening new one to prevent state corruption
+                if (currentCameraDeviceName != null && !currentCameraDeviceName.equals(targetDevice.getDeviceName())) {
+                    Log.d(TAG, "Closing previous camera: " + currentCameraDeviceName);
+                    try {
+                        // Stop stream if running
+                        if (isStreaming) {
+                            Log.d(TAG, "Stopping stream");
+                            uvcCamera.PreviewStopStream(mNativePtr);
+                            if (!waitForStreamStopped(mNativePtr, 2000)) {
+                                Log.w(TAG, "Stream stop timed out");
+                            }
+                        }
+                        
+                        // Close device handle
+                        Log.d(TAG, "Closing device handle");
+                        MainActivity.closeCameraDevice(mNativePtr);
+                        if (!waitForDeviceClosed(mNativePtr, 2000)) {
+                            Log.w(TAG, "Device close timed out");
+                        }
+                        
+                        // Close USB connection
+                        if (deviceConnection != null) {
+                            Log.d(TAG, "Closing USB connection");
+                            deviceConnection.close();
+                            deviceConnection = null;
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error closing previous camera: " + e.getMessage(), e);
+                    }
+                    
+                    // Step 2: Reset camera state after closing previous camera
+                    Log.d(TAG, "Resetting camera state after closing previous camera");
+                    MainActivity.resetCameraState();
+                    
+                    // Add a small delay to ensure decoder/preview state is fully cleared
+                    // This is especially important when switching between cameras with same format (e.g., MJPEG→MJPEG)
+                    try {
+                        Thread.sleep(200);
+                        Log.d(TAG, "Waited for decoder/preview cleanup");
+                    } catch (InterruptedException e) {
+                        Log.w(TAG, "Sleep interrupted: " + e.getMessage());
+                    }
+                }
+                
+                // Step 3: Open new camera device
                 // Request USB permission if not already granted
                 if (!usbManager.hasPermission(targetDevice)) {
                     Log.d(TAG, "Requesting USB permission for: " + targetDevice.getDeviceName());
@@ -282,84 +377,37 @@ public class FaultFormActivity extends AppCompatActivity {
                 }
 
                 int fd = deviceConnection.getFileDescriptor();
-                Log.d(TAG, "Camera FD: " + fd + " for device: " + targetDevice.getDeviceName());
-
-                // Only reset and reinitialize if switching to a DIFFERENT camera
-                // First camera is already initialized by MainActivity
-                boolean isSwitchingCamera = currentCameraDeviceName != null && 
-                                           !currentCameraDeviceName.equals(targetDevice.getDeviceName());
+                Log.d(TAG, "Camera FD: " + fd + " for device: " + targetDevice.getDeviceName() + 
+                      " (VID: " + String.format("0x%04x", targetDevice.getVendorId()) + 
+                      ", PID: " + String.format("0x%04x", targetDevice.getProductId()) + ")");
                 
-                if (isSwitchingCamera) {
-                    Log.d(TAG, "Switching from " + currentCameraDeviceName + " to " + targetDevice.getDeviceName());
-                    
-                    // Stream should already be stopped by loadPreview() when showing captured image
-                    // or by explicit user action - don't call stopStreaming here to avoid double-stop
-                    
-                    // CRITICAL: Only close if we have a valid camera initialized
-                    // (first camera might not be fully initialized yet)
-                    if (mNativePtr != 0) {
-                        Log.d(TAG, "Closing previous camera device");
-                        try {
-                            MainActivity.closeCameraDevice(mNativePtr);
-                            // Give USB time to release interfaces before opening new camera
-                            Thread.sleep(200);
-                        } catch (Exception e) {
-                            Log.e(TAG, "Error closing camera device: " + e.getMessage(), e);
-                        }
-                    }
-                    
-                    // Brief wait for USB cleanup
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException e) {
-                        Log.e(TAG, "Sleep interrupted", e);
-                    }
-                    
-                    // CRITICAL: Negotiate optimal format for THIS camera before initializing stream
-                    // Each camera may have different capabilities and buffer requirements
-                    Log.d(TAG, "Negotiating format for new camera");
-                    negotiateCameraFormat();
-                    
-                    // CRITICAL: Must reinitialize streaming parameters with new FD to update device handle
-                    // This wraps the new FD with libusb and updates camera_deviceHandle
-                    Log.d(TAG, "Calling initStreamingParms to update device handle for new camera");
-                    Log.d(TAG, "Using format: " + videoFormat + " " + imageWidth + "x" + imageHeight);
-                    int initResult = MainActivity.initStreamingParms(mNativePtr, fd);
-                    if (initResult != 0) {
-                        Log.e(TAG, "initStreamingParms failed: " + initResult);
-                        mainHandler.post(() -> {
-                            Toast.makeText(FaultFormActivity.this, "Failed to initialize new camera", Toast.LENGTH_SHORT).show();
-                            statusText.setText("Camera error - tap Capture to retry");
-                        });
-                        return;
-                    }
-                    Log.d(TAG, "initStreamingParms succeeded");
-                } else {
-                    Log.d(TAG, "Using already-initialized camera: " + targetDevice.getDeviceName());
-                }
-                
-                currentCameraDeviceName = targetDevice.getDeviceName();
+                // Step 4: Initialize new camera (format enumeration, configuration, streaming)
+                Log.d(TAG, "Initializing camera: " + targetDevice.getDeviceName());
+                Log.d(TAG, "Using mNativePtr: 0x" + Long.toHexString(mNativePtr) + " with FD: " + fd);
 
-                // CRITICAL: Must call listDeviceUvc to initialize native device handle for this camera
-                // Each camera needs to be individually registered with the native code
-                Log.d(TAG, "Calling listDeviceUvc (static) to initialize device");
                 int uvcResult = MainActivity.listDeviceUvc(mNativePtr, fd);
                 if (uvcResult != 0) {
-                    Log.e(TAG, "Failed to initialize camera with listDeviceUvc: " + uvcResult);
+                    Log.e(TAG, "Failed to create device handle with listDeviceUvc: " + uvcResult);
                     mainHandler.post(() -> {
                         Toast.makeText(FaultFormActivity.this, "Camera initialization failed", Toast.LENGTH_SHORT).show();
                         statusText.setText("Camera error - tap Capture to retry");
                     });
                     return;
                 }
-                Log.d(TAG, "listDeviceUvc succeeded");
+                Log.d(TAG, "Device handle created, ready for format enumeration");
 
-                // CRITICAL: Sync native camera state after opening new device
-                // This ensures the native side has the correct format/frame indices for THIS camera
-                Log.d(TAG, "Setting native values to sync with camera's actual capabilities");
-                Log.d(TAG, "Format: " + videoFormat + " " + imageWidth + "x" + imageHeight + 
+                // NOW enumerate formats with valid device handle
+                // This applies to both first camera AND camera switching
+                // Never rely on default/stale values - each camera has unique capabilities
+                Log.d(TAG, "Enumerating and negotiating format for camera");
+                enumerateAndConfigureFormat();
+
+                // CRITICAL: Sync native camera state BEFORE control transfer
+                // This ensures initStreamingParms uses the correct format/frame indices for THIS camera
+                Log.d(TAG, "Setting native values to sync with camera's enumerated capabilities");
+                Log.d(TAG, "Format: " + videoFormat + " " + imageWidth + "x" + imageHeight +
                            " alt=" + streamingAltSetting + " packet=" + maxPacketSize);
-                
+
                 try {
                     int syncResult = MainActivity.setNativeValues(mNativePtr, fd,
                             8,                          // packetsPerRequest
@@ -379,7 +427,7 @@ public class FaultFormActivity extends AppCompatActivity {
                             1                           // lowAndroid
                     );
                     if (syncResult != 0) {
-                        Log.w(TAG, "setNativeValues returned non-zero: " + syncResult + 
+                        Log.w(TAG, "setNativeValues returned non-zero: " + syncResult +
                                    " (may indicate format mismatch, will try fallback)");
                     } else {
                         Log.d(TAG, "setNativeValues succeeded");
@@ -389,6 +437,27 @@ public class FaultFormActivity extends AppCompatActivity {
                     // Continue anyway - native code might still work with defaults
                 }
 
+                // CRITICAL: Initialize streaming parameters with correct FD and format values
+                // This performs control transfer WITH UPDATED VALUES (device handle already exists from listDeviceUvc)
+                Log.d(TAG, "Calling initStreamingParms to perform control transfer");
+                Log.d(TAG, "Using format: " + videoFormat + " " + imageWidth + "x" + imageHeight);
+                int initResult = MainActivity.initStreamingParms(mNativePtr, fd);
+                if (initResult != 0) {
+                    Log.e(TAG, "initStreamingParms failed: " + initResult);
+                    mainHandler.post(() -> {
+                        Toast.makeText(FaultFormActivity.this, "Failed to initialize camera", Toast.LENGTH_SHORT).show();
+                        statusText.setText("Camera error - tap Capture to retry");
+                    });
+                    return;
+                }
+                Log.d(TAG, "initStreamingParms succeeded");
+
+                currentCameraDeviceName = targetDevice.getDeviceName();
+                Log.d(TAG, "Active camera is now: " + currentCameraDeviceName + " for step " + currentStep);
+
+                // Native values already set above before initStreamingParms
+                // No need to set them again here
+
                 // Adjust preview surface size based on negotiated resolution
 
                 // This ensures the preview displays correct aspect ratio for the current camera
@@ -397,11 +466,31 @@ public class FaultFormActivity extends AppCompatActivity {
                     adjustSurfaceViewSize();
                 });
 
+                // Clear surface to remove any residual frames from previous camera
                 Surface surface = surfaceView.getHolder().getSurface();
+                Log.d(TAG, "Surface check: surface=" + surface + ", isValid=" + (surface != null ? surface.isValid() : "N/A"));
                 if (surface == null || !surface.isValid()) {
-                    mainHandler.post(() -> Toast.makeText(this, "Surface invalid", Toast.LENGTH_SHORT).show());
+                    Log.e(TAG, "Surface is invalid! Cannot start preview.");
+                    mainHandler.post(() -> {
+                        Toast.makeText(this, "Surface invalid", Toast.LENGTH_SHORT).show();
+                        statusText.setText("Surface error - restart app");
+                    });
                     return;
                 }
+                
+                // Clear the surface canvas to black to prevent old frames from being visible
+                try {
+                    Canvas canvas = surfaceView.getHolder().lockCanvas();
+                    if (canvas != null) {
+                        canvas.drawColor(android.graphics.Color.BLACK);
+                        surfaceView.getHolder().unlockCanvasAndPost(canvas);
+                        Log.d(TAG, "Surface cleared to black");
+                    }
+                } catch (Exception e) {
+                    Log.w(TAG, "Could not clear surface: " + e.getMessage());
+                }
+                
+                Log.d(TAG, "Surface is valid, proceeding with PreviewPrepareStream");
 
                 UVCCamera.IFrameCallback frameCallback = frameData -> {
                     if (capturePending) {
@@ -410,14 +499,19 @@ public class FaultFormActivity extends AppCompatActivity {
                     }
                 };
 
+                Log.d(TAG, "Calling PreviewPrepareStream...");
                 int prepareResult = uvcCamera.PreviewPrepareStream(mNativePtr, surface, frameCallback);
+                Log.d(TAG, "PreviewPrepareStream returned: " + prepareResult);
                 if (prepareResult == 0) {
+                    Log.d(TAG, "Calling PreviewStartStream...");
+
                     int startResult = uvcCamera.PreviewStartStream(mNativePtr);
                     if (startResult == 0) {
                         isStreaming = true;
                         streamStarted = true;
+                        Log.d(TAG, "Stream started successfully from camera: " + currentCameraDeviceName);
                         mainHandler.post(() -> {
-                            statusText.setText("Streaming");
+                            statusText.setText("Streaming from: " + currentCameraDeviceName.substring(currentCameraDeviceName.lastIndexOf("/") + 1));
                             captureButton.setEnabled(true);  // Enable capture when stream is ready
                         });
                     } else {
@@ -512,17 +606,17 @@ public class FaultFormActivity extends AppCompatActivity {
                             Log.e(TAG, "Error retrying with fallback #2", ex2);
                         }
 
-                        // Third fallback: no alternate setting (alt=0), minimal packet size
+                        // Third fallback: Try YUY2 if MJPEG failed (some cameras only support uncompressed)
                         try {
-                            Log.d(TAG, "Trying fallback #3: 640x480 alt=0 packet=512");
+                            Log.d(TAG, "Trying fallback #3: 640x480 YUY2 alt=3 packet=2048");
                             imageWidth = 640;
                             imageHeight = 480;
-                            frameInterval = 100000;
-                            maxPacketSize = 512;
-                            streamingAltSetting = 0;
-                            videoFormat = "MJPEG";
+                            frameInterval = 333333;  // 30 fps
+                            maxPacketSize = 2048;
+                            streamingAltSetting = 3;
+                            videoFormat = "YUY2";
 
-                            Log.d(TAG, "Calling initStreamingParms with fallback #3 (alt=0)");
+                            Log.d(TAG, "Calling initStreamingParms with fallback #3 (YUY2)");
                             int retryResult3 = MainActivity.initStreamingParms(mNativePtr, fd);
                             if (retryResult3 == 0) {
                                 int retryPrepare3 = uvcCamera.PreviewPrepareStream(mNativePtr, surface, frameCallback);
@@ -531,8 +625,8 @@ public class FaultFormActivity extends AppCompatActivity {
                                     if (retryStart3 == 0) {
                                         isStreaming = true;
                                         streamStarted = true;
-                                        mainHandler.post(() -> statusText.setText("Streaming (fallback 640x480 alt=0)"));
-                                        Log.d(TAG, "Fallback #3 succeeded");
+                                        mainHandler.post(() -> statusText.setText("Streaming (fallback YUY2)"));
+                                        Log.d(TAG, "Fallback #3 (YUY2) succeeded");
                                         return;
                                     } else {
                                         Log.w(TAG, "Fallback #3 start failed with code " + retryStart3);
@@ -545,6 +639,41 @@ public class FaultFormActivity extends AppCompatActivity {
                             }
                         } catch (Exception ex3) {
                             Log.e(TAG, "Error retrying with fallback #3", ex3);
+                        }
+
+                        // Fourth fallback: YUY2 with minimal settings (320x240 or lower framerate)
+                        try {
+                            Log.d(TAG, "Trying fallback #4: 320x240 YUY2 alt=2 packet=1024");
+                            imageWidth = 320;
+                            imageHeight = 240;
+                            frameInterval = 333333;  // 30 fps
+                            maxPacketSize = 1024;
+                            streamingAltSetting = 2;
+                            videoFormat = "YUY2";
+
+                            Log.d(TAG, "Calling initStreamingParms with fallback #4 (YUY2 low-res)");
+                            int retryResult4 = MainActivity.initStreamingParms(mNativePtr, fd);
+                            if (retryResult4 == 0) {
+                                int retryPrepare4 = uvcCamera.PreviewPrepareStream(mNativePtr, surface, frameCallback);
+                                if (retryPrepare4 == 0) {
+                                    int retryStart4 = uvcCamera.PreviewStartStream(mNativePtr);
+                                    if (retryStart4 == 0) {
+                                        isStreaming = true;
+                                        streamStarted = true;
+                                        mainHandler.post(() -> statusText.setText("Streaming (fallback YUY2 320x240)"));
+                                        Log.d(TAG, "Fallback #4 (YUY2 low-res) succeeded");
+                                        return;
+                                    } else {
+                                        Log.w(TAG, "Fallback #4 start failed with code " + retryStart4);
+                                    }
+                                } else {
+                                    Log.w(TAG, "Fallback #4 prepare failed with code " + retryPrepare4);
+                                }
+                            } else {
+                                Log.w(TAG, "Fallback #4 initStreamingParms failed with code " + retryResult4);
+                            }
+                        } catch (Exception ex4) {
+                            Log.e(TAG, "Error retrying with fallback #4", ex4);
                         }
 
                         // All attempts failed
@@ -574,6 +703,12 @@ public class FaultFormActivity extends AppCompatActivity {
                     statusText.setText("Camera error - tap Capture to retry");
                     captureButton.setEnabled(false);  // Disable capture on exception
                 });
+            } finally {
+                synchronized (cameraLock) {
+                    isInitializing = false;
+                    stepTransitionInProgress = false;  // Clear transition flag after camera initialization
+                    Log.d(TAG, "Camera initialization completed, lock released");
+                }
             }
         }).start();
     }
@@ -622,11 +757,13 @@ public class FaultFormActivity extends AppCompatActivity {
 
         if (currentStep < FORM_STEPS - 1) {
             Log.d(TAG, "Moving to next step: " + (currentStep + 1));
+            stepTransitionInProgress = true;  // Prevent surfaceCreated() from interfering
             currentStep++;
             Log.d(TAG, "Updated currentStep to: " + currentStep);
             updateStepUi();
             Log.d(TAG, "Updated UI, now loading camera for step " + currentStep);
             loadCameraForStep();
+            // stepTransitionInProgress will be cleared after camera initialization completes
         } else {
             Log.d(TAG, "All steps complete, exporting PDF");
             exportPdf();
@@ -636,15 +773,17 @@ public class FaultFormActivity extends AppCompatActivity {
     private void moveToPreviousStep() {
         notes[currentStep] = noteInput.getText().toString().trim();
         if (currentStep > 0) {
+            stepTransitionInProgress = true;  // Prevent surfaceCreated() from interfering
             currentStep--;
             updateStepUi();
             loadCameraForStep();
+            // stepTransitionInProgress will be cleared after camera initialization completes
         }
     }
     
     private void loadCameraForStep() {
             Log.d(TAG, "loadCameraForStep called for step " + currentStep);
-        
+
             // Query fresh device list instead of using cache to ensure devices are current
             String[] freshCameraList = scanUvcCameras();
             if (freshCameraList.length == 0) {
@@ -654,26 +793,44 @@ public class FaultFormActivity extends AppCompatActivity {
                 });
                 return;
             }
-            
+
             // Update cache with fresh list
             allCameraNames = freshCameraList;
+
+            // Each step should use its corresponding camera directly (step 0→camera 0, step 1→camera 1, etc.)
+            // No cycling - if we don't have enough cameras, show error
+            if (currentStep >= allCameraNames.length) {
+                mainHandler.post(() -> {
+                    Toast.makeText(FaultFormActivity.this, 
+                        "Not enough cameras: need camera " + (currentStep + 1) + " but only " + allCameraNames.length + " available", 
+                        Toast.LENGTH_LONG).show();
+                    statusText.setText("Missing camera #" + (currentStep + 1));
+                });
+                Log.e(TAG, "Step " + currentStep + " needs camera at index " + currentStep + 
+                      " but only " + allCameraNames.length + " cameras available");
+                return;
+            }
             
-            // Use different camera for each step (cycle if fewer cameras than steps)
-            int cameraIndex = currentStep % allCameraNames.length;
-            String cameraName = allCameraNames[cameraIndex];
-            Log.d(TAG, "Using camera at index " + cameraIndex + ": " + cameraName);
-        
+            String cameraName = allCameraNames[currentStep];
+            Log.d(TAG, "Step " + currentStep + ": Using camera at index " + currentStep + ": " + cameraName);
+
             deviceName = cameraName;
+            Log.d(TAG, "Set deviceName to: " + deviceName + ", calling loadCameraByName()");
             loadCameraByName();
     }
     
     private void loadCameraByName() {
+        Log.d(TAG, "loadCameraByName called for device: " + deviceName);
         new Thread(() -> {
+            Log.d(TAG, "loadCameraByName thread started, looking for: " + deviceName);
             HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();
+            Log.d(TAG, "USB device list size: " + deviceList.size());
             UsbDevice targetDevice = null;
             for (UsbDevice device : deviceList.values()) {
+                Log.d(TAG, "Checking device: " + device.getDeviceName());
                 if (device.getDeviceName().equals(deviceName)) {
                     targetDevice = device;
+                    Log.d(TAG, "Found matching device!");
                     break;
                 }
             }
@@ -696,9 +853,25 @@ public class FaultFormActivity extends AppCompatActivity {
         ArrayList<String> names = new ArrayList<>();
         for (UsbDevice device : deviceList.values()) {
             if (isUvcCamera(device)) {
-                names.add(device.getDeviceName());
+                String deviceName = device.getDeviceName();
+                if (names.contains(deviceName)) {
+                    Log.w(TAG, "WARNING: Duplicate camera detected, skipping: " + deviceName +
+                          " (VID: " + device.getVendorId() + ", PID: " + device.getProductId() + ")");
+                    continue;  // Skip duplicates
+                }
+                names.add(deviceName);
+                Log.d(TAG, "Found UVC camera: " + deviceName +
+                      " (VID: " + device.getVendorId() + ", PID: " + device.getProductId() +
+                      ", interfaces: " + device.getInterfaceCount() + ")");
             }
         }
+        
+        // CRITICAL: Sort camera names to ensure consistent ordering across scans
+        // HashMap.values() returns elements in unpredictable order, causing same camera
+        // to appear at different indices each time scanUvcCameras() is called
+        java.util.Collections.sort(names);
+        Log.d(TAG, "Total UVC cameras found: " + names.size() + ", sorted: " + names);
+        
         return names.toArray(new String[0]);
     }
 
@@ -713,39 +886,170 @@ public class FaultFormActivity extends AppCompatActivity {
     }
     
     /**
-     * Negotiate optimal format/resolution for the current camera
+     * Enumerate camera's actual supported formats and select the best one
+     * This replaces guessing with actual camera capabilities
+     */
+    private void enumerateAndConfigureFormat() {
+        Log.d(TAG, "Enumerating formats for camera: " + deviceName);
+
+        try {
+            CameraFormatInfo[] formats = uvcCamera.enumerateCameraFormats(mNativePtr);
+
+            if (formats == null || formats.length == 0) {
+                Log.w(TAG, "Could not enumerate formats, falling back to negotiation");
+                negotiateCameraFormat();
+                return;
+            }
+
+            Log.d(TAG, "Camera supports " + formats.length + " formats");
+
+            // Prefer MJPEG (compressed), fall back to YUY2 (uncompressed)
+            CameraFormatInfo selectedFormat = null;
+            for (CameraFormatInfo fmt : formats) {
+                Log.d(TAG, "Available format: " + fmt.formatName + " with " + fmt.supportedFrames.length + " frames");
+                if ("MJPEG".equals(fmt.formatName)) {
+                    selectedFormat = fmt;
+                    break;
+                }
+            }
+
+            // Fall back to first format if MJPEG not available
+            if (selectedFormat == null) {
+                selectedFormat = formats[0];
+                Log.d(TAG, "MJPEG not available, using: " + selectedFormat.formatName);
+            }
+
+            if (selectedFormat.supportedFrames.length == 0) {
+                Log.w(TAG, "No frames available for format, falling back");
+                negotiateCameraFormat();
+                return;
+            }
+
+            // Select best frame (prefer common resolutions)
+            CameraFrameInfo selectedFrame = selectedFormat.supportedFrames[0];
+            for (CameraFrameInfo frame : selectedFormat.supportedFrames) {
+                Log.d(TAG, "  Frame: " + frame.width + "x" + frame.height + " index=" + frame.frameIndex);
+                // Prefer VGA (640x480) for compatibility
+                if (frame.width == 640 && frame.height == 480) {
+                    selectedFrame = frame;
+                    break;
+                }
+            }
+
+            // Apply discovered configuration
+            formatIndex = selectedFormat.formatIndex;
+            frameIndex = selectedFrame.frameIndex;
+            imageWidth = selectedFrame.width;
+            imageHeight = selectedFrame.height;
+            frameInterval = (int) selectedFrame.dwDefaultFrameInterval;
+            videoFormat = selectedFormat.formatName;
+
+            // Calculate bandwidth requirements from camera's own specifications
+            // dwMaxBitRate is in bits per second
+            long requiredBandwidthBps = selectedFrame.dwMaxBitRate > 0 ?
+                                        selectedFrame.dwMaxBitRate :
+                                        calculateBandwidth(imageWidth, imageHeight, videoFormat, frameInterval);
+
+            // Convert to bytes per microframe (USB HS has 8000 microframes/second)
+            int requiredBytesPerMicroframe = (int) ((requiredBandwidthBps / 8) / 8000);
+
+            // USB 2.0 HS isochronous can do up to 3x1024 bytes = 3072 bytes per microframe
+            // Round up to nearest power-of-2-ish packet size: 512, 1024, 2048, 3072
+            // Estimate alt setting based on typical camera patterns (but let native code verify)
+            if (requiredBytesPerMicroframe <= 512) {
+                maxPacketSize = 1024;  // Use 1024 for safety margin
+                streamingAltSetting = 1;  // Typically alt 1-2 for low bandwidth
+            } else if (requiredBytesPerMicroframe <= 1024) {
+                maxPacketSize = 2048;
+                streamingAltSetting = 2;  // Typically alt 2-3 for medium bandwidth
+            } else if (requiredBytesPerMicroframe <= 2048) {
+                maxPacketSize = 3072;
+                streamingAltSetting = 3;  // Typically alt 3-4 for high bandwidth
+            } else {
+                maxPacketSize = 3072;  // Maximum
+                streamingAltSetting = 4;  // Typically alt 4+ for maximum bandwidth
+            }
+
+            Log.d(TAG, "Bandwidth calculation: " + (requiredBandwidthBps / 1000000) + " Mbps, " +
+                       requiredBytesPerMicroframe + " bytes/μframe, using maxPacket=" + maxPacketSize +
+                       ", estimated alt=" + streamingAltSetting);
+
+            Log.d(TAG, "Enumerated: " + videoFormat + " " + imageWidth + "x" + imageHeight +
+                       " @" + (10000000 / frameInterval) + "fps, formatIdx=" + formatIndex +
+                       ", frameIdx=" + frameIndex + ", packet=" + maxPacketSize + ", alt=" + streamingAltSetting);
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error enumerating formats: " + e.getMessage(), e);
+            Log.w(TAG, "Falling back to format negotiation");
+            negotiateCameraFormat();
+        }
+    }
+
+    /**
+     * Calculate required bandwidth for a given format/resolution/framerate
+     * Used as fallback when camera doesn't report dwMaxBitRate
+     * @return bandwidth in bits per second
+     */
+    private long calculateBandwidth(int width, int height, String format, int frameIntervalIn100ns) {
+        // Frame interval is in 100ns units, convert to fps
+        double fps = 10000000.0 / frameIntervalIn100ns;
+
+        long bytesPerFrame;
+        if ("MJPEG".equals(format)) {
+            // MJPEG is compressed - estimate ~1.5 bits per pixel (very rough estimate)
+            // Actual compression varies widely, but this gives a reasonable upper bound
+            bytesPerFrame = (long) (width * height * 1.5 / 8);
+        } else if ("YUY2".equals(format) || "UYVY".equals(format)) {
+            // Uncompressed YUV 4:2:2 format - exactly 2 bytes per pixel
+            bytesPerFrame = width * height * 2;
+        } else if ("NV12".equals(format)) {
+            // YUV 4:2:0 format - 1.5 bytes per pixel
+            bytesPerFrame = (width * height * 3) / 2;
+        } else {
+            // Unknown format - assume uncompressed RGB (3 bytes/pixel) for safety
+            bytesPerFrame = width * height * 3;
+        }
+
+        long bitsPerSecond = (long) (bytesPerFrame * fps * 8);
+        Log.d(TAG, "Calculated bandwidth for " + format + " " + width + "x" + height +
+                   " @" + (int)fps + "fps: " + (bitsPerSecond / 1000000) + " Mbps");
+        return bitsPerSecond;
+    }
+
+    /**
+     * Negotiate optimal format/resolution for the current camera (fallback method)
      * Each camera may have different capabilities, so we need per-camera config
      */
     private void negotiateCameraFormat() {
         Log.d(TAG, "Negotiating format for camera: " + deviceName);
-        
+
         // Try multiple format options with fallbacks
         // Priority: MJPEG (compressed) with common resolutions
-        
+
         // Try 1: MJPEG 640x480 (VGA - most commonly supported)
         if (tryConfigureFormat("MJPEG", 640, 480, 1, 1)) {
             Log.d(TAG, "Negotiated: 640x480 MJPEG for " + deviceName);
             return;
         }
-        
+
         // Try 2: MJPEG 800x600 (SVGA)
         if (tryConfigureFormat("MJPEG", 800, 600, 1, 1)) {
             Log.d(TAG, "Negotiated: 800x600 MJPEG for " + deviceName);
             return;
         }
-        
+
         // Try 3: MJPEG 1280x720 (HD)
         if (tryConfigureFormat("MJPEG", 1280, 720, 1, 1)) {
             Log.d(TAG, "Negotiated: 1280x720 MJPEG for " + deviceName);
             return;
         }
-        
+
         // Try 4: YUY2 640x480 (uncompressed fallback)
         if (tryConfigureFormat("YUY2", 640, 480, 1, 1)) {
             Log.d(TAG, "Negotiated: 640x480 YUY2 for " + deviceName);
             return;
         }
-        
+
         // Default: Use existing config and hope for the best
         Log.w(TAG, "Could not negotiate format for " + deviceName + ", using defaults");
         // Keep current values
@@ -787,13 +1091,17 @@ public class FaultFormActivity extends AppCompatActivity {
                 streamingAltSetting = 4;
             }
         } else if ("YUY2".equals(format)) {
-            // YUY2 is uncompressed, needs adaptive bandwidth
-            frameInterval = 166666;  // Moderate frame rate
-            // YUY2 is 2 bytes per pixel
-            int bytesPerSecond = width * height * 2 * 30;  // assuming 30 fps
-            // Typical USB HS isochronous max: 3 * 1024 bytes per 125us microframe
-            maxPacketSize = Math.min(3072, (bytesPerSecond / 8000) + 512);
-            streamingAltSetting = maxPacketSize > 2048 ? 3 : 2;
+            // YUY2 is uncompressed, needs high bandwidth
+            frameInterval = 333333;  // 30 fps
+            // YUY2 is 2 bytes per pixel, requires significant bandwidth
+            // Use high packet size and alt setting for uncompressed formats
+            if (width <= 640) {
+                maxPacketSize = 3072;  // Maximum isochronous packet size
+                streamingAltSetting = 4;  // Higher alt setting for uncompressed
+            } else {
+                maxPacketSize = 3072;
+                streamingAltSetting = 5;
+            }
         } else {
             // Other formats - use quality-focused settings
             frameInterval = 166666; // ~60 fps
@@ -814,7 +1122,25 @@ public class FaultFormActivity extends AppCompatActivity {
                     Log.d(TAG, "Activity destroyed, skipping camera switch");
                     return;
                 }
-                
+
+                // Check if camera is already being initialized
+                synchronized (cameraLock) {
+                    if (isInitializing) {
+                        Log.w(TAG, "Camera initialization in progress, waiting before switch");
+                        // Wait for current initialization to complete
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            Log.e(TAG, "Wait interrupted", e);
+                        }
+                        // Check again
+                        if (isInitializing) {
+                            Log.w(TAG, "Camera still initializing, skipping duplicate switch request");
+                            return;
+                        }
+                    }
+                }
+
                 // CRITICAL: Stop streaming from previous camera before switching
                 // This ensures the stream buffer from the old camera is destroyed
                 // and doesn't cause buffer overflow when new camera starts
@@ -878,10 +1204,11 @@ public class FaultFormActivity extends AppCompatActivity {
             // Show overlay text when showing camera preview
             TextView overlay = findViewById(R.id.overlayHint);
             overlay.setVisibility(android.view.View.VISIBLE);
-            // Ensure preview is running when needed
-            if (!isStreaming && cameraDevice != null) {
-                initCamera(cameraDevice);
-            }
+            // NOTE: Don't call initCamera() here! 
+            // Camera initialization is handled by loadCameraForStep() when changing steps
+            // or by surfaceCreated callback on initial load
+            // Calling initCamera(cameraDevice) here would restart the WRONG camera
+            // since cameraDevice field is not updated when switching cameras
             return;
         }
         
@@ -1252,5 +1579,65 @@ public class FaultFormActivity extends AppCompatActivity {
         b = Math.max(0, Math.min(255, b));
 
         return 0xFF000000 | (r << 16) | (g << 8) | b;
+    }
+
+    /**
+     * Poll until stream is stopped or timeout occurs
+     * @param cameraPtr Native camera pointer
+     * @param timeoutMs Maximum time to wait in milliseconds
+     * @return true if stream stopped, false if timeout
+     */
+    private boolean waitForStreamStopped(long cameraPtr, long timeoutMs) {
+        long startTime = System.currentTimeMillis();
+        int pollCount = 0;
+        
+        while (System.currentTimeMillis() - startTime < timeoutMs) {
+            if (MainActivity.isStreamStopped(cameraPtr)) {
+                Log.d(TAG, "Stream stopped after " + pollCount + " polls (" + 
+                      (System.currentTimeMillis() - startTime) + "ms)");
+                return true;
+            }
+            
+            pollCount++;
+            try {
+                Thread.sleep(10); // Poll every 10ms
+            } catch (InterruptedException e) {
+                Log.e(TAG, "Poll interrupted", e);
+                return false;
+            }
+        }
+        
+        Log.w(TAG, "Stream stop timeout after " + pollCount + " polls");
+        return false;
+    }
+
+    /**
+     * Poll until camera device is closed or timeout occurs
+     * @param cameraPtr Native camera pointer
+     * @param timeoutMs Maximum time to wait in milliseconds
+     * @return true if device closed, false if timeout
+     */
+    private boolean waitForDeviceClosed(long cameraPtr, long timeoutMs) {
+        long startTime = System.currentTimeMillis();
+        int pollCount = 0;
+        
+        while (System.currentTimeMillis() - startTime < timeoutMs) {
+            if (MainActivity.isCameraDeviceClosed(cameraPtr)) {
+                Log.d(TAG, "Device closed after " + pollCount + " polls (" + 
+                      (System.currentTimeMillis() - startTime) + "ms)");
+                return true;
+            }
+            
+            pollCount++;
+            try {
+                Thread.sleep(10); // Poll every 10ms
+            } catch (InterruptedException e) {
+                Log.e(TAG, "Poll interrupted", e);
+                return false;
+            }
+        }
+        
+        Log.w(TAG, "Device close timeout after " + pollCount + " polls");
+        return false;
     }
 }

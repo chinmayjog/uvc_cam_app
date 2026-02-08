@@ -2159,60 +2159,119 @@ uvc_error_t uvc_stream_start_random(uvc_stream_handle_t *strmh, uvc_frame_callba
             goto fail;
         }
 
-        /* Go through the altsettings and find one whose packets are at least
-         * as big as our format's maximum per-packet usage. Assume that the
-         * packet sizes are increasing. */
-        const int num_alt = interface->num_altsetting - 1;
-        for (alt_idx = 0; alt_idx <= num_alt ; alt_idx++) {
-            altsetting = interface->altsetting + alt_idx;
-            endpoint_bytes_per_packet = 0;
+		/* Go through the altsettings and find one whose packets match the requested values. */
+		const int num_alt = interface->num_altsetting - 1;
+		endpoint_bytes_per_packet = 0;
+		alt_idx = -1;
 
-            /* Find the endpoint with the number specified in the VS header */
-            for (ep_idx = 0; ep_idx < altsetting->bNumEndpoints; ep_idx++) {
-                endpoint = altsetting->endpoint + ep_idx;
-                if (endpoint->bEndpointAddress == format_desc->parent->bEndpointAddress) {
-                    endpoint_bytes_per_packet = endpoint->wMaxPacketSize;
-                    // wMaxPacketSize: [unused:2 (multiplier-1):3 size:11]
-                    // bit10…0:		maximum packet size
-                    // bit12…11:	the number of additional transaction opportunities per microframe for high-speed
-                    //				00 = None (1 transaction per microframe)
-                    //				01 = 1 additional (2 per microframe)
-                    //				10 = 2 additional (3 per microframe)
-                    //				11 = Reserved
-                    endpoint_bytes_per_packet
-                            = (endpoint_bytes_per_packet & 0x07ff)
-                              * (((endpoint_bytes_per_packet >> 11) & 3) + 1);
-                    break;
-                }
-            }
-            if (endpoint_bytes_per_packet == maxPacketSize) {
-                LOGDEB ("Altsetting found");
-                break;
-            } else {LOGDEB ("alt_idx = %d   //   endpoint_byte = %d", alt_idx, endpoint_bytes_per_packet);}
+		if ((altset >= 0) && (altset <= num_alt)) {
+			alt_idx = altset;
+			altsetting = interface->altsetting + alt_idx;
 
+			/* Find the endpoint with the number specified in the VS header */
+			for (ep_idx = 0; ep_idx < altsetting->bNumEndpoints; ep_idx++) {
+				endpoint = altsetting->endpoint + ep_idx;
+				if (endpoint->bEndpointAddress == format_desc->parent->bEndpointAddress) {
+					endpoint_bytes_per_packet = endpoint->wMaxPacketSize;
+					// wMaxPacketSize: [unused:2 (multiplier-1):3 size:11]
+					// bit10…0:		maximum packet size
+					// bit12…11:	the number of additional transaction opportunities per microframe for high-speed
+					//				00 = None (1 transaction per microframe)
+					//				01 = 1 additional (2 per microframe)
+					//				10 = 2 additional (3 per microframe)
+					//				11 = Reserved
+					endpoint_bytes_per_packet
+							= (endpoint_bytes_per_packet & 0x07ff)
+							  * (((endpoint_bytes_per_packet >> 11) & 3) + 1);
+					break;
+				}
+			}
 
-            /*
-            // XXX config_bytes_per_packet should not be zero otherwise zero divided exception occur
-            if (LIKELY(endpoint_bytes_per_packet)) {
-                if ( (endpoint_bytes_per_packet >= config_bytes_per_packet)
-                     || (alt_idx == num_alt) ) {	// XXX always match to last altsetting for buggy device
-                    /* Transfers will be at most one frame long: Divide the maximum frame size
-                     * by the size of the endpoint and round up *//*
-                    packets_per_transfer = (dwMaxVideoFrameSize
-                                            + endpoint_bytes_per_packet - 1)
-                                           / endpoint_bytes_per_packet;		// XXX cashed by zero divided exception occured
+			if (endpoint_bytes_per_packet) {
+				if ((maxPacketSize > 0) && (endpoint_bytes_per_packet != (size_t)maxPacketSize)) {
+					LOGW("Requested maxPacketSize %d does not match altsetting %d endpoint %d",
+						 maxPacketSize, alt_idx, endpoint_bytes_per_packet);
+				}
+				LOGDEB("Altsetting forced by altset=%d", alt_idx);
+			} else {
+				LOGW("Requested altset %d has no matching endpoint", altset);
+			}
+		}
 
-                    /* But keep a reasonable limit: Otherwise we start dropping data *//*
-                    if (packets_per_transfer > 32)
-                        packets_per_transfer = 32;
+		if (!endpoint_bytes_per_packet) {
+			size_t max_endpoint_bytes = 0;
+			int best_alt_idx = -1;
+			
+			for (alt_idx = 0; alt_idx <= num_alt ; alt_idx++) {
+				altsetting = interface->altsetting + alt_idx;
+				size_t current_endpoint_bytes = 0;
 
-                    total_transfer_size = packets_per_transfer * endpoint_bytes_per_packet;
-                    break;
-                }
-            }
-            */
-        }
-        packets_per_transfer = packetsPerRequest;
+				/* Find the endpoint with the number specified in the VS header */
+				for (ep_idx = 0; ep_idx < altsetting->bNumEndpoints; ep_idx++) {
+					endpoint = altsetting->endpoint + ep_idx;
+					if (endpoint->bEndpointAddress == format_desc->parent->bEndpointAddress) {
+						current_endpoint_bytes = endpoint->wMaxPacketSize;
+						// wMaxPacketSize: [unused:2 (multiplier-1):3 size:11]
+						// bit10…0:		maximum packet size
+						// bit12…11:	the number of additional transaction opportunities per microframe for high-speed
+						//				00 = None (1 transaction per microframe)
+						//				01 = 1 additional (2 per microframe)
+						//				10 = 2 additional (3 per microframe)
+						//				11 = Reserved
+						current_endpoint_bytes
+								= (current_endpoint_bytes & 0x07ff)
+								  * (((current_endpoint_bytes >> 11) & 3) + 1);
+						break;
+					}
+				}
+				
+				// If maxPacketSize==0, find the largest available endpoint for sufficient bandwidth
+				// Otherwise, find the alt setting that matches the requested packet size exactly
+				if (maxPacketSize == 0) {
+					if (current_endpoint_bytes > max_endpoint_bytes) {
+						max_endpoint_bytes = current_endpoint_bytes;
+						best_alt_idx = alt_idx;
+						LOGDEB("Found altsetting %d with endpoint %d bytes", alt_idx, current_endpoint_bytes);
+					}
+				} else if (current_endpoint_bytes == (size_t)maxPacketSize) {
+					endpoint_bytes_per_packet = current_endpoint_bytes;
+					alt_idx = alt_idx; // Keep current alt_idx
+					LOGDEB("Altsetting found");
+					break;
+				} else {
+					LOGDEB ("alt_idx = %d   //   endpoint_byte = %d", alt_idx, current_endpoint_bytes);
+				}
+			}
+			
+			// If auto-selecting (maxPacketSize==0), use the largest endpoint found
+			if (maxPacketSize == 0 && best_alt_idx >= 0) {
+				alt_idx = best_alt_idx;
+				endpoint_bytes_per_packet = max_endpoint_bytes;
+				LOGDEB("Auto-selected altsetting %d with largest endpoint %d bytes (maxPacketSize=0)", alt_idx, endpoint_bytes_per_packet);
+			}
+		}
+
+#if 0
+			// XXX config_bytes_per_packet should not be zero otherwise zero divided exception occur
+			if (LIKELY(endpoint_bytes_per_packet)) {
+				if ( (endpoint_bytes_per_packet >= config_bytes_per_packet)
+					 || (alt_idx == num_alt) ) { // XXX always match to last altsetting for buggy device
+					// Transfers will be at most one frame long: Divide the maximum frame size
+					// by the size of the endpoint and round up
+					packets_per_transfer = (dwMaxVideoFrameSize
+											+ endpoint_bytes_per_packet - 1)
+										   / endpoint_bytes_per_packet; // XXX cashed by zero divided exception occured
+
+					// But keep a reasonable limit: Otherwise we start dropping data
+					if (packets_per_transfer > 32)
+						packets_per_transfer = 32;
+
+					total_transfer_size = packets_per_transfer * endpoint_bytes_per_packet;
+					break;
+				}
+			}
+#endif
+	packets_per_transfer = packetsPerRequest;
         total_transfer_size =  packets_per_transfer * endpoint_bytes_per_packet;
 
 

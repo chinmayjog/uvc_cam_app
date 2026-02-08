@@ -161,6 +161,8 @@ extern void stopJavaVM();
 extern void resetCameraState();
 extern void destroyPreview(uvc_camera_t *uvc_camera);
 extern void closeCameraDevice(uvc_camera_t *uvc_camera);
+extern bool isCameraDeviceClosed(uvc_camera_t *uvc_camera);
+extern bool isStreamStopped(uvc_camera_t *uvc_camera);
 
 #ifdef __cplusplus
 }

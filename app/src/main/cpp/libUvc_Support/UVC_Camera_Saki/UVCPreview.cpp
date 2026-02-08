@@ -1272,8 +1272,27 @@ void UVCPreview::setCustomValues(uvc_camera_t *camera_pointer) {
 }
 
 long create_UVCPreview(uvc_device_handle_t *devh, long preview_pointer) {
+    LOGD("create_UVCPreview: devh=%p, old_preview_pointer=%ld", devh, preview_pointer);
+    
+    // CRITICAL: Delete old preview object before creating new one to prevent memory leak
+    // and ensure decoder state doesn't persist between cameras
+    if (preview_pointer != 0) {
+        LOGD("create_UVCPreview: Deleting old preview object at %ld", preview_pointer);
+        UVCPreview *oldPreview = reinterpret_cast<UVCPreview *>(preview_pointer);
+        delete oldPreview;
+        LOGD("create_UVCPreview: Old preview deleted");
+    }
+    
+    if (devh && devh->usb_devh) {
+        // Log the actual USB device to verify which camera we're creating preview for
+        struct libusb_device_descriptor desc;
+        libusb_get_device_descriptor(libusb_get_device(devh->usb_devh), &desc);
+        LOGD("create_UVCPreview: Creating preview for USB device VID=0x%04x PID=0x%04x", 
+             desc.idVendor, desc.idProduct);
+    }
     UVCPreview *uvcPreview = new UVCPreview(devh);
 	preview_pointer = reinterpret_cast<long>(uvcPreview);
+    LOGD("create_UVCPreview: Created new preview object at %ld", preview_pointer);
     return reinterpret_cast<long>(uvcPreview);
 }
 

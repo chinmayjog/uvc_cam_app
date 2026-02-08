@@ -35,6 +35,10 @@ extern "C" JNIEXPORT long JNICALL Java_com_minimal_uvccamera_UVCCamera_nativeCre
 
     uvc_camera_t *camera = new uvc_camera_t();
 
+    // Initialize pointers to NULL to avoid issues with freeing
+    camera->frameFormat = NULL;
+    camera->mUsbFs = NULL;
+
     setField_long(env, obj, "mNativePtr", reinterpret_cast<ID_TYPE>(camera));
 
     camera_pointer = reinterpret_cast<ID_TYPE>(camera);
@@ -195,4 +199,20 @@ extern "C" JNIEXPORT void JNICALL Java_com_minimal_uvccamera_MainActivity_closeC
     
     uvc_camera_t *camera = reinterpret_cast<uvc_camera_t *>(mNativePtr);
     closeCameraDevice(camera);
+}
+
+// Check if camera device is properly closed
+extern "C" JNIEXPORT jboolean JNICALL Java_com_minimal_uvccamera_MainActivity_isCameraDeviceClosed
+        (JNIEnv *env, jobject obj, ID_TYPE mNativePtr) {
+    
+    uvc_camera_t *camera = reinterpret_cast<uvc_camera_t *>(mNativePtr);
+    return isCameraDeviceClosed(camera) ? JNI_TRUE : JNI_FALSE;
+}
+
+// Check if stream is stopped
+extern "C" JNIEXPORT jboolean JNICALL Java_com_minimal_uvccamera_MainActivity_isStreamStopped
+        (JNIEnv *env, jobject obj, ID_TYPE mNativePtr) {
+    
+    uvc_camera_t *camera = reinterpret_cast<uvc_camera_t *>(mNativePtr);
+    return isStreamStopped(camera) ? JNI_TRUE : JNI_FALSE;
 }

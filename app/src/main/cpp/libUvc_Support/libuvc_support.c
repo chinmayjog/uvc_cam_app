@@ -125,9 +125,14 @@ void resetCameraState() {
 // Destroy old preview to avoid stale pointers
 void destroyPreview(uvc_camera_t *uvc_camera) {
     if (uvc_camera && uvc_camera->preview_pointer) {
-        LOGD("destroyPreview: clearing old preview object");
-        // Just clear the pointer - new preview will be created
+        LOGD("destroyPreview: clearing old preview object (pointer=%ld)", uvc_camera->preview_pointer);
+        // The UVCPreview object itself will be deleted when we create a new one
+        // For now, just clear the pointer to signal it needs recreation
         uvc_camera->preview_pointer = 0;
+        LOGD("destroyPreview: preview_pointer cleared to 0");
+    } else {
+        LOGD("destroyPreview: no preview to destroy (camera=%p, pointer=%ld)", 
+             uvc_camera, uvc_camera ? uvc_camera->preview_pointer : 0);
     }
 }
 
@@ -137,6 +142,13 @@ void closeCameraDevice(uvc_camera_t *uvc_camera) {
     if (!uvc_camera) {
         LOGD("closeCameraDevice: camera is NULL, skipping");
         return;
+    }
+    
+    // CRITICAL: Destroy preview FIRST to release old camera's preview object
+    // This ensures the old camera's stream context is released
+    if (uvc_camera->preview_pointer) {
+        LOGD("closeCameraDevice: destroying old preview object (pointer=%ld)", uvc_camera->preview_pointer);
+        destroyPreview(uvc_camera);
     }
     
     // CRITICAL: Release all claimed interfaces BEFORE clearing device handle
@@ -158,10 +170,37 @@ void closeCameraDevice(uvc_camera_t *uvc_camera) {
     // The next initStreamingParms will wrap the new FD properly
     
     uvc_camera->camera_deviceHandle = NULL;
-    LOGD("closeCameraDevice: cleared device handle reference");
+    uvc_camera->camera_device = NULL;
+    uvc_camera->valuesSet = 0;  // Reset counter for new camera
+    LOGD("closeCameraDevice: cleared device handle reference and reset valuesSet counter");
     
     // Reset state flags to allow next device to be initialized
     resetCameraState();
+}
+
+// Check if camera device is properly closed (device handle is NULL and interfaces released)
+bool isCameraDeviceClosed(uvc_camera_t *uvc_camera) {
+    if (!uvc_camera) {
+        return true; // NULL camera is considered "closed"
+    }
+    
+    // Check if device handle is NULL
+    if (uvc_camera->camera_deviceHandle != NULL) {
+        return false; // Device handle still exists
+    }
+    
+    // If device handle is NULL, camera is closed
+    return true;
+}
+
+// Check if stream is stopped (runningStream flag is false)
+bool isStreamStopped(uvc_camera_t *uvc_camera) {
+    if (!uvc_camera) {
+        return true; // NULL camera means no stream
+    }
+    
+    // Check runningStream flag - if false, stream is stopped
+    return !uvc_camera->runningStream;
 }
 
 
@@ -576,8 +615,27 @@ uvc_frame_t *checkRotation(uvc_frame_t *rgbx) {
 
 ///////////////////////////////////////////////////   STANDARD CAMERA FUNCTIONS  /////////////////////////////////////////
 
+// Global flag to track control transfer success
+static bool control_transfer_succeeded = false;
+
 void initStreamingParms_controltransfer(uvc_camera_t *uvc_camera, libusb_device_handle *handle, bool createPointer) {
     LOGD("bool createPointer = %d", createPointer);
+
+    // Reset success flag
+    control_transfer_succeeded = false;
+
+    // CRITICAL: Log the format parameters being used for control transfer
+    // This helps verify that the correct values are being negotiated with the camera
+    LOGD("Control transfer with: format=%s, formatIdx=%d, frameIdx=%d, interval=%d, width=%d, height=%d, alt=%d, packet=%d",
+         uvc_camera->frameFormat ? uvc_camera->frameFormat : "NULL",
+         uvc_camera->camFormatIndex,
+         uvc_camera->camFrameIndex,
+         uvc_camera->camFrameInterval,
+         uvc_camera->imageWidth,
+         uvc_camera->imageHeight,
+         uvc_camera->camStreamingAltSetting,
+         uvc_camera->maxPacketSize);
+
     size_t length;
     if (uvc_camera->bcdUVC >= 0x0150)
         length = 48;
@@ -613,22 +671,32 @@ void initStreamingParms_controltransfer(uvc_camera_t *uvc_camera, libusb_device_
     LOGD("initStreamingParmsIntArray[0] = %d", initStreamingParmsIntArray[0]);
     LOGD("initStreamingParmsIntArray[1] = %d", initStreamingParmsIntArray[1]);
     LOGD("initStreamingParmsIntArray[2] = %d", initStreamingParmsIntArray[2]);
+
+    // Track failures count
+    int failures = 0;
+
     int len = libusb_control_transfer(handle, RT_CLASS_INTERFACE_SET, SET_CUR, (VS_PROBE_CONTROL << 8), uvc_camera->camStreamingInterfaceNum,
                                       buffer, sizeof (buffer), 2000);
     if (len != sizeof (buffer)) {
         LOGD("\nCamera initialization failed. Streaming parms probe set failed, len= %d.\n", len);
+        failures++;
     } else {
         LOGD("1st: InitialContolTransfer Sucessful");
         LOGD("Camera initialization success, len= %d.\n", len);
     }
     len = libusb_control_transfer(handle, RT_CLASS_INTERFACE_GET, GET_CUR, (VS_PROBE_CONTROL << 8), uvc_camera->camStreamingInterfaceNum,
                                   buffer, sizeof (buffer), 500);
-    if (len != sizeof (buffer)) {
-        LOGD("Camera initialization failed. Streaming parms probe set failed, len= %d.\n", len);
+    // Accept any response >= 26 bytes (UVC 1.0 minimum) - some cameras report UVC 1.1 but return UVC 1.0 sized responses
+    if (len < 26) {
+        LOGD("Camera initialization failed. Streaming parms probe get failed, len= %d.\n", len);
         if (createPointer == true) {
             memset(ctl_transfer_Data->ctl_transfer_values + 47, 0, length);
         }
+        failures++;
     } else {
+        if (len != sizeof (buffer)) {
+            LOGD("2nd: CTL received %d bytes (expected %zu) - acceptable for UVC 1.0 cameras", len, sizeof(buffer));
+        }
         if (createPointer == true) {
             memcpy(ctl_transfer_Data->ctl_transfer_values + 47, buffer, length);
         }
@@ -654,6 +722,7 @@ void initStreamingParms_controltransfer(uvc_camera_t *uvc_camera, libusb_device_
         if (createPointer == true) {
             memset(ctl_transfer_Data->ctl_transfer_values + 95, 0, length);
         }
+        failures++;
     } else {
         if (createPointer == true) {
             memcpy(ctl_transfer_Data->ctl_transfer_values + 95, buffer, length);
@@ -663,19 +732,32 @@ void initStreamingParms_controltransfer(uvc_camera_t *uvc_camera, libusb_device_
     getStreamingParmsArray(finalStreamingParmsIntArray_first , buffer);
     len = libusb_control_transfer(handle, RT_CLASS_INTERFACE_GET, GET_CUR, (short) (VS_COMMIT_CONTROL << 8),
                                   uvc_camera->camStreamingInterfaceNum, buffer, sizeof (buffer), 2000);
-    if (len != sizeof (buffer)) {
+    // Accept any response >= 26 bytes (UVC 1.0 minimum) - some cameras report UVC 1.1 but return UVC 1.0 sized responses
+    if (len < 26) {
         LOGD("ERROR 4th CTL FAILED");
         LOGD("Camera initialization failed. Streaming parms commit get failed, len= %d.", len);
         if (createPointer == true) {
             memset(ctl_transfer_Data->ctl_transfer_values + 143, 0, length);
         }
+        failures++;
     } else {
+        if (len != sizeof (buffer)) {
+            LOGD("4th: CTL received %d bytes (expected %zu) - acceptable for UVC 1.0 cameras", len, sizeof(buffer));
+        }
         LOGD("4th: FinalCTL Sucessful");
         if (createPointer == true) {
             memcpy(ctl_transfer_Data->ctl_transfer_values + 143, buffer, length);
         }
     }
     getStreamingParmsArray(finalStreamingParmsIntArray , buffer);
+
+    // Set success flag - all 4 control transfers must succeed
+    control_transfer_succeeded = (failures == 0);
+    if (failures > 0) {
+        LOGD("Control transfer FAILED: %d out of 4 transfers failed", failures);
+    } else {
+        LOGD("All 4 control transfers succeeded");
+    }
 }
 
 void print_endpoint(const struct libusb_endpoint_descriptor *endpoint, int bInterfaceNumber) {
@@ -872,6 +954,11 @@ uvc_camera_t* allocate_camera_struct() {
 void free_camera_struct(uvc_camera_t *uvc_camera) {
     if (uvc_camera != NULL) {
         LOGD("Freeing camera struct at: %p", uvc_camera);
+        // Free the format string if allocated
+        if (uvc_camera->frameFormat != NULL) {
+            free((void*)uvc_camera->frameFormat);
+            uvc_camera->frameFormat = NULL;
+        }
         free(uvc_camera);
     }
 }
@@ -892,7 +979,14 @@ int set_the_native_Values (uvc_camera_t *uvc_camera, int FD, int packetsPerReque
     uvc_camera->camStreamingInterfaceNum = camStreamingInterfaceNumber;
     uvc_camera->imageWidth = imageWidt;
     uvc_camera->imageHeight = imageHeigh;
-    uvc_camera->frameFormat = frameformat;
+
+    // Make a persistent copy of the format string to avoid dangling pointer
+    // Free old format string if one exists
+    if (uvc_camera->frameFormat != NULL) {
+        free((void*)uvc_camera->frameFormat);
+    }
+    uvc_camera->frameFormat = strdup(frameformat);
+
     //uvc_camera->mUsbFs = mUsbFs;
     //uvc_camera->vendorID = vendorID;
     //uvc_camera->productID = productID;
@@ -938,6 +1032,13 @@ bool compareArrays(int a[], int b[]) {
 }
 
 bool compareStreamingParmsValues() {
+    // CRITICAL: Check if control transfers actually succeeded before comparing values
+    if (!control_transfer_succeeded) {
+        LOGD("Control transfers FAILED - cannot validate parameters");
+        LOGD("compareStreamingParmsValues returned false due to control transfer failure");
+        return false;
+    }
+
     if ( !compareArrays( initStreamingParmsIntArray, probedStreamingParmsIntArray ) || !compareArrays( initStreamingParmsIntArray, finalStreamingParmsIntArray_first )  )  {
         if (initStreamingParmsIntArray[0] != finalStreamingParmsIntArray_first[0]) {
             LOGD("The Controltransfer returned differnt Format Index's\n\n");
@@ -1008,6 +1109,12 @@ int initStreamingParms(uvc_camera_t *uvc_camera, int FD) {
     int r = libusb_set_interface_alt_setting(uvc_camera->camera_deviceHandle->usb_devh, uvc_camera->camStreamingInterfaceNum, 0); // camStreamingAltSetting = 7;    // 7 = 3x1024 bytes packet size
     if (r != LIBUSB_SUCCESS) {
         LOGD("libusb_set_interface_alt_setting(uvc_camera->camera_deviceHandle->usb_devh, Interface 1, alternate_setting 0) failed with error %d\n", r);
+        // CRITICAL: Release all claimed interfaces before returning error
+        // Otherwise they stay claimed and cause errors on next initialization attempt
+        for (int if_num = 0; if_num < (uvc_camera->camStreamingInterfaceNum + 1); if_num++) {
+            libusb_release_interface(uvc_camera->camera_deviceHandle->usb_devh, if_num);
+        }
+        camIsOpen = false;  // Reset flag since initialization failed
         return r;
     } else {
         LOGD("Die Alternativeinstellungen wurden erfolgreich gesetzt: %d ; Altsetting = 0\n", r);
