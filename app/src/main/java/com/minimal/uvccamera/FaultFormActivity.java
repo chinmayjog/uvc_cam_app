@@ -12,6 +12,10 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.pdf.PdfDocument;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.params.StreamConfigurationMap;
 import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
@@ -22,11 +26,14 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.util.Size;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,6 +67,8 @@ public class FaultFormActivity extends AppCompatActivity {
     private Button saveButton;
     private Button retryButton;
     private Button backButton;
+
+    private FrameLayout previewContainer;
 
     private int imageWidth;
     private int imageHeight;
@@ -138,6 +147,7 @@ public class FaultFormActivity extends AppCompatActivity {
         surfaceView = findViewById(R.id.surfaceView);
         statusText = findViewById(R.id.statusText);
         stepIndicator = findViewById(R.id.stepIndicator);
+        previewContainer = findViewById(R.id.previewContainer);
         capturedPreview = findViewById(R.id.capturedPreview);
         noteInput = findViewById(R.id.noteInput);
         captureButton = findViewById(R.id.captureButton);
@@ -148,6 +158,7 @@ public class FaultFormActivity extends AppCompatActivity {
         // Camera configuration from MainActivity
         imageWidth = getIntent().getIntExtra("imageWidth", 640);
         imageHeight = getIntent().getIntExtra("imageHeight", 480);
+        setupPreviewSize();
         formatIndex = getIntent().getIntExtra("formatIndex", 1);
         frameIndex = getIntent().getIntExtra("frameIndex", 1);
         frameInterval = getIntent().getIntExtra("frameInterval", 333333);
@@ -187,7 +198,8 @@ public class FaultFormActivity extends AppCompatActivity {
         surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(@NonNull SurfaceHolder holder) {
-                adjustSurfaceViewSize();
+//                adjustSurfaceViewSize();
+//                setupPreviewSize();
                 if (imagePaths[currentStep] == null && isStreaming == false) {
                     initCamera(cameraDevice);
                 }
@@ -394,7 +406,8 @@ public class FaultFormActivity extends AppCompatActivity {
                 // This ensures the preview displays correct aspect ratio for the current camera
                 mainHandler.post(() -> {
                     Log.d(TAG, "Adjusting surface view for resolution: " + imageWidth + "x" + imageHeight);
-                    adjustSurfaceViewSize();
+//                    adjustSurfaceViewSize();
+//                    setupPreviewSize();
                 });
 
                 Surface surface = surfaceView.getHolder().getSurface();
@@ -597,17 +610,24 @@ public class FaultFormActivity extends AppCompatActivity {
     private void retryCapture() {
         // Clear the captured image and show live preview again
         imagePaths[currentStep] = null;
+        Log.d(TAG,"inside retry capture");
         notes[currentStep] = noteInput.getText().toString().trim();
+        Log.d(TAG,"inside retry capture --- 1 "+notes.length);
         // Explicitly toggle visibility to live preview
         surfaceView.setVisibility(android.view.View.VISIBLE);
+        Log.d(TAG,"inside retry capture maake surface view visible");
         capturedPreview.setVisibility(android.view.View.GONE);
+        Log.d(TAG,"inside retry capture make captured view gone");
         capturedPreview.setImageDrawable(null);
+        Log.d(TAG,"inside retry capture set drawable to null");
 
         // Ensure streaming is running for the retry
+        Log.d(TAG,"inside retry capture ----- 2  "+!isStreaming +" and cameraDevice "+cameraDevice);
         if (!isStreaming && cameraDevice != null) {
+            Log.d(TAG,"inside straming condition");
             initCamera(cameraDevice);
         }
-
+        Log.d(TAG,"inside retry capture --- retrying");
         statusText.setText("Retrying...");
         Toast.makeText(this, "Ready to capture again", Toast.LENGTH_SHORT).show();
     }
@@ -634,6 +654,7 @@ public class FaultFormActivity extends AppCompatActivity {
     }
 
     private void moveToPreviousStep() {
+        Log.d(TAG, "All steps-- " + notes.length);
         notes[currentStep] = noteInput.getText().toString().trim();
         if (currentStep > 0) {
             currentStep--;
@@ -718,34 +739,34 @@ public class FaultFormActivity extends AppCompatActivity {
      */
     private void negotiateCameraFormat() {
         Log.d(TAG, "Negotiating format for camera: " + deviceName);
-        
+
         // Try multiple format options with fallbacks
         // Priority: MJPEG (compressed) with common resolutions
-        
+
         // Try 1: MJPEG 640x480 (VGA - most commonly supported)
         if (tryConfigureFormat("MJPEG", 640, 480, 1, 1)) {
             Log.d(TAG, "Negotiated: 640x480 MJPEG for " + deviceName);
             return;
         }
-        
+
         // Try 2: MJPEG 800x600 (SVGA)
         if (tryConfigureFormat("MJPEG", 800, 600, 1, 1)) {
             Log.d(TAG, "Negotiated: 800x600 MJPEG for " + deviceName);
             return;
         }
-        
+
         // Try 3: MJPEG 1280x720 (HD)
         if (tryConfigureFormat("MJPEG", 1280, 720, 1, 1)) {
             Log.d(TAG, "Negotiated: 1280x720 MJPEG for " + deviceName);
             return;
         }
-        
+
         // Try 4: YUY2 640x480 (uncompressed fallback)
         if (tryConfigureFormat("YUY2", 640, 480, 1, 1)) {
             Log.d(TAG, "Negotiated: 640x480 YUY2 for " + deviceName);
             return;
         }
-        
+
         // Default: Use existing config and hope for the best
         Log.w(TAG, "Could not negotiate format for " + deviceName + ", using defaults");
         // Keep current values
@@ -1206,13 +1227,38 @@ public class FaultFormActivity extends AppCompatActivity {
                 surfaceWidth = Math.round(displayHeight * cameraAspect);
             }
 
-            android.view.ViewGroup.LayoutParams params = surfaceView.getLayoutParams();
-            params.width = surfaceWidth;
-            params.height = surfaceHeight;
-            surfaceView.setLayoutParams(params);
+//            android.view.ViewGroup.LayoutParams params = surfaceView.getLayoutParams();
+//            params.width = surfaceWidth;
+//            params.height = surfaceHeight;
+//            surfaceView.setLayoutParams(params);
+
         } catch (Exception e) {
             Log.e(TAG, "Surface sizing error", e);
         }
+    }
+
+    private void setupPreviewSize() {
+
+        previewContainer.post(new Runnable() {
+            @Override
+            public void run() {
+
+                if (imageWidth == 0 || imageHeight == 0) return;
+
+                int containerWidth = previewContainer.getWidth();
+
+                float cameraRatio = (float) imageWidth / imageHeight;
+                int calculatedHeight = (int) (containerWidth / cameraRatio);
+
+                FrameLayout.LayoutParams params =
+                        new FrameLayout.LayoutParams(containerWidth, calculatedHeight);
+
+                params.gravity = android.view.Gravity.CENTER;
+
+                surfaceView.setLayoutParams(params);
+                capturedPreview.setLayoutParams(params);
+            }
+        });
     }
 
     private Bitmap decodeYUY2(byte[] frameData, int width, int height) {
