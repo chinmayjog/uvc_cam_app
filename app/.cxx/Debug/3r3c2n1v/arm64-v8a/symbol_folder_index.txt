@@ -1,0 +1,1 @@
+/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/arm64-v8a

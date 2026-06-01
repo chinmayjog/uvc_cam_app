@@ -1,0 +1,61 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install"
+		],
+		"files" : 
+		[
+			"libusb/cmake/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 138,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 145,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "library",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/5c3s4x1y/obj/x86_64/libusb1.0.so"
+			],
+			"targetId" : "usb1.0::@765f6470707b23d99a14",
+			"targetIndex" : 31,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 2,
+			"component" : "Unspecified",
+			"destination" : "include/libusb1.0",
+			"paths" : 
+			[
+				"libusb/cmake/../libusb/libusb.h"
+			],
+			"type" : "file"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "libUvc_Support/preview/uvc/usb1.0",
+		"source" : "libusb/cmake"
+	}
+}

@@ -1,0 +1,11 @@
+/home/chinmay/Android/Sdk/cmake/3.22.1/bin/ninja \
+  -C \
+  /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/.cxx/Debug/3r3c2n1v/arm64-v8a \
+  Uvc_Support \
+  jpeg9 \
+  testlibusb \
+  usb1.0 \
+  uvc \
+  uvc_preview \
+  yuv_shared \
+  yuvconvert

@@ -1,0 +1,28 @@
+CMake Deprecation Warning at libyuv/CMakeLists.txt:6 (CMAKE_MINIMUM_REQUIRED):
+  Compatibility with CMake < 2.8.12 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value or use a ...<max> suffix to tell
+  CMake that the project does not need compatibility with older versions.
+
+
+CMake Warning (dev) at libyuv/CMakeLists.txt:49 (if):
+  Policy CMP0064 is not set: Support new TEST if() operator.  Run "cmake
+  --help-policy CMP0064" for policy details.  Use the cmake_policy command to
+  set the policy and suppress this warning.
+
+  TEST will be interpreted as an operator when the policy is set to NEW.
+  Since the policy is not set the OLD behavior will be used.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+Building ver.: 0.0.1766
+Compiling for ARM
+Packaging for: armhf-32
+CMake Deprecation Warning at libuvc/CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 2.8.12 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value or use a ...<max> suffix to tell
+  CMake that the project does not need compatibility with older versions.
+
+

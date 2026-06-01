@@ -1,13 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Minimal UVC Camera</string>
+    <string name="app_name">UVC Camera Docs</string>
     <string name="detecting">Detecting camera...</string>
     <string name="configuring">Configuring camera...</string>
-    <string name="ready">Camera ready</string>
+    <string name="ready">Camera ready — select a slot</string>
     <string name="start_preview">Start Preview</string>
     <string name="stop_preview">Stop Preview</string>
     <string name="take_picture">Take Picture</string>
-    <string name="no_camera">No USB camera found</string>
+    <string name="no_camera">No USB camera found. Connect a camera.</string>
     <string name="picture_saved">Picture saved: %1$s</string>
     <string name="error">Error: %1$s</string>
+
+    <string name="btn_camera1">Camera 1</string>
+    <string name="btn_camera2">Camera 2</string>
+    <string name="btn_camera3">Camera 3</string>
+    <string name="btn_camera4">Camera 4</string>
+
+    <string name="multiple_cameras_detected">Multiple cameras detected</string>
+    <string name="multiple_cameras_title">Multiple Cameras Detected</string>
+    <string name="multiple_cameras_msg">Please disconnect all USB cameras except the one you want to use, then the app will continue automatically.</string>
+
+    <string name="save_photo_title">Save Photo</string>
+    <string name="save_photo_msg">Choose how to save this photo:</string>
+    <string name="ocr_save">OCR and Save as PDF</string>
+    <string name="save_direct">Save Directly as PDF</string>
+    <string name="ocr_processing">Extracting text…</string>
+    <string name="save_success">Saved to Camera %d folder</string>
+    <string name="ocr_failed">OCR failed — image saved without text</string>
 </resources>

@@ -1,0 +1,67 @@
+-- The C compiler identification is Clang 18.0.1
+-- The CXX compiler identification is Clang 18.0.1
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /home/chinmay/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/bin/clang - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /home/chinmay/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Could NOT find JPEG (missing: JPEG_LIBRARY JPEG_INCLUDE_DIR) 
+-- No target type selected, default to shared library
+-- Looking for clock_gettime
+-- Looking for clock_gettime - found
+-- Looking for pthread_condattr_setclock
+-- Looking for pthread_condattr_setclock - found
+-- Looking for pthread_setname_np
+-- Looking for pthread_setname_np - found
+-- Looking for pthread_threadid_np
+-- Looking for pthread_threadid_np - not found
+-- Looking for eventfd
+-- Looking for eventfd - found
+-- Looking for pipe2
+-- Looking for pipe2 - found
+-- Looking for syslog
+-- Looking for syslog - found
+-- Looking for include file asm/types.h
+-- Looking for include file asm/types.h - found
+-- Looking for include file dlfcn.h
+-- Looking for include file dlfcn.h - found
+-- Looking for include file inttypes.h
+-- Looking for include file inttypes.h - found
+-- Looking for include file stdint.h
+-- Looking for include file stdint.h - found
+-- Looking for include file stdlib.h
+-- Looking for include file stdlib.h - found
+-- Looking for include file string.h
+-- Looking for include file string.h - found
+-- Looking for include file strings.h
+-- Looking for include file strings.h - found
+-- Looking for include file sys/stat.h
+-- Looking for include file sys/stat.h - found
+-- Looking for include file sys/time.h
+-- Looking for include file sys/time.h - found
+-- Looking for include file sys/types.h
+-- Looking for include file sys/types.h - found
+-- Looking for include file unistd.h
+-- Looking for include file unistd.h - found
+-- Looking for 4 include files stdlib.h, ..., float.h
+-- Looking for 4 include files stdlib.h, ..., float.h - found
+-- Looking for EFD_CLOEXEC
+-- Looking for EFD_CLOEXEC - found
+-- Looking for EFD_NONBLOCK
+-- Looking for EFD_NONBLOCK - found
+-- Looking for TFD_CLOEXEC
+-- Looking for TFD_CLOEXEC - not found
+-- Looking for timerfd_create
+-- Looking for timerfd_create - found
+-- Performing Test HAVE_STRUCT_TIMESPEC
+-- Performing Test HAVE_STRUCT_TIMESPEC - Success
+-- Performing Test HAVE_VISIBILITY
+-- Performing Test HAVE_VISIBILITY - Success
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/.cxx/Debug/3r3c2n1v/arm64-v8a

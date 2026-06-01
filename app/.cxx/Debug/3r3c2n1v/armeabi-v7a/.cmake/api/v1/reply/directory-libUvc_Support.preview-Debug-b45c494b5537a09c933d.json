@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "libUvc_Support/preview",
+		"source" : "libUvc_Support/UVC_Camera_Saki"
+	}
+}

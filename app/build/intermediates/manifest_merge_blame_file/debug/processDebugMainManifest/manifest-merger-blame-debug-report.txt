@@ -1,0 +1,291 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.minimal.uvccamera"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="21"
+9        android:targetSdkVersion="36" />
+10
+11    <uses-permission android:name="android.permission.USB_PERMISSION" />
+11-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:5:5-73
+11-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:5:22-70
+12    <uses-permission
+12-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:6:5-7:38
+13        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+13-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:6:22-78
+14        android:maxSdkVersion="32" />
+14-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:7:9-35
+15    <uses-permission
+15-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:8:5-9:38
+16        android:name="android.permission.READ_EXTERNAL_STORAGE"
+16-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:8:22-77
+17        android:maxSdkVersion="32" />
+17-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:9:9-35
+18    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+18-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:10:5-76
+18-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:10:22-73
+19    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+19-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:11:5-75
+19-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:11:22-72
+20    <uses-permission android:name="android.permission.CAMERA" />
+20-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:12:5-65
+20-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:12:22-62
+21
+22    <uses-feature
+22-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:14:5-87
+23        android:name="android.hardware.usb.host"
+23-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:14:19-59
+24        android:required="false" />
+24-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:14:60-84
+25    <uses-feature
+25-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:15:5-85
+26        android:name="android.hardware.camera"
+26-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:15:19-57
+27        android:required="false" />
+27-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:15:58-82
+28
+29    <permission
+29-->[androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:22:5-24:47
+30        android:name="com.minimal.uvccamera.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+30-->[androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:23:9-81
+31        android:protectionLevel="signature" />
+31-->[androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:24:9-44
+32
+33    <uses-permission android:name="com.minimal.uvccamera.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" /> <!-- Although the *SdkVersion is captured in gradle build files, this is required for non gradle builds -->
+33-->[androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:26:5-97
+33-->[androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:26:22-94
+34    <!-- <uses-sdk android:minSdkVersion="14"/> -->
+35    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+35-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:25:5-79
+35-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:25:22-76
+36    <uses-permission android:name="android.permission.INTERNET" />
+36-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:26:5-67
+36-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:26:22-64
+37
+38    <application
+38-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:17:5-53:19
+39        android:allowBackup="true"
+39-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:18:9-35
+40        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+40-->[androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:28:18-86
+41        android:debuggable="true"
+42        android:extractNativeLibs="true"
+43        android:icon="@mipmap/ic_launcher"
+43-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:19:9-43
+44        android:label="@string/app_name"
+44-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:20:9-41
+45        android:requestLegacyExternalStorage="true"
+45-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:24:9-52
+46        android:roundIcon="@mipmap/ic_launcher_round"
+46-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:21:9-54
+47        android:supportsRtl="true"
+47-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:22:9-35
+48        android:theme="@style/Theme.MinimalUVCCamera" >
+48-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:23:9-54
+49        <meta-data
+49-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:26:9-28:35
+50            android:name="com.google.mlkit.vision.DEPENDENCIES"
+50-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:27:13-64
+51            android:value="ocr" />
+51-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:28:13-32
+52
+53        <activity
+53-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:30:9-47:20
+54            android:name="com.minimal.uvccamera.MainActivity"
+54-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:31:13-41
+55            android:exported="true"
+55-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:32:13-36
+56            android:screenOrientation="portrait" >
+56-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:33:13-49
+57            <intent-filter>
+57-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:34:13-37:29
+58                <action android:name="android.intent.action.MAIN" />
+58-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:35:17-69
+58-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:35:25-66
+59
+60                <category android:name="android.intent.category.LAUNCHER" />
+60-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:36:17-77
+60-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:36:27-74
+61            </intent-filter>
+62            <intent-filter>
+62-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:39:13-42:29
+63                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+63-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:40:17-90
+63-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:40:25-87
+64
+65                <category android:name="android.intent.category.DEFAULT" />
+65-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:41:17-76
+65-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:41:27-73
+66            </intent-filter>
+67
+68            <meta-data
+68-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:44:13-46:57
+69                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+69-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:45:17-79
+70                android:resource="@xml/device_filter" />
+70-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:46:17-54
+71        </activity>
+72        <activity
+72-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:49:9-52:52
+73            android:name="com.minimal.uvccamera.CameraActivity"
+73-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:50:13-43
+74            android:exported="false"
+74-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:51:13-37
+75            android:screenOrientation="portrait" />
+75-->/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:52:13-49
+76
+77        <service
+77-->[com.google.android.gms:play-services-mlkit-text-recognition-common:19.0.0] /home/chinmay/.gradle/caches/8.13/transforms/08fe52293ac6f16df53342f051e90efd/transformed/jetified-play-services-mlkit-text-recognition-common-19.0.0/AndroidManifest.xml:9:9-15:19
+78            android:name="com.google.mlkit.common.internal.MlKitComponentDiscoveryService"
+78-->[com.google.android.gms:play-services-mlkit-text-recognition-common:19.0.0] /home/chinmay/.gradle/caches/8.13/transforms/08fe52293ac6f16df53342f051e90efd/transformed/jetified-play-services-mlkit-text-recognition-common-19.0.0/AndroidManifest.xml:10:13-91
+79            android:directBootAware="true"
+79-->[com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:17:13-43
+80            android:exported="false" >
+80-->[com.google.android.gms:play-services-mlkit-text-recognition-common:19.0.0] /home/chinmay/.gradle/caches/8.13/transforms/08fe52293ac6f16df53342f051e90efd/transformed/jetified-play-services-mlkit-text-recognition-common-19.0.0/AndroidManifest.xml:11:13-37
+81            <meta-data
+81-->[com.google.android.gms:play-services-mlkit-text-recognition-common:19.0.0] /home/chinmay/.gradle/caches/8.13/transforms/08fe52293ac6f16df53342f051e90efd/transformed/jetified-play-services-mlkit-text-recognition-common-19.0.0/AndroidManifest.xml:12:13-14:85
+82                android:name="com.google.firebase.components:com.google.mlkit.vision.text.internal.TextRegistrar"
+82-->[com.google.android.gms:play-services-mlkit-text-recognition-common:19.0.0] /home/chinmay/.gradle/caches/8.13/transforms/08fe52293ac6f16df53342f051e90efd/transformed/jetified-play-services-mlkit-text-recognition-common-19.0.0/AndroidManifest.xml:13:17-114
+83                android:value="com.google.firebase.components.ComponentRegistrar" />
+83-->[com.google.android.gms:play-services-mlkit-text-recognition-common:19.0.0] /home/chinmay/.gradle/caches/8.13/transforms/08fe52293ac6f16df53342f051e90efd/transformed/jetified-play-services-mlkit-text-recognition-common-19.0.0/AndroidManifest.xml:14:17-82
+84            <meta-data
+84-->[com.google.mlkit:vision-common:17.3.0] /home/chinmay/.gradle/caches/8.13/transforms/da9f22d6009a2c6e895681e7617279e4/transformed/jetified-vision-common-17.3.0/AndroidManifest.xml:12:13-14:85
+85                android:name="com.google.firebase.components:com.google.mlkit.vision.common.internal.VisionCommonRegistrar"
+85-->[com.google.mlkit:vision-common:17.3.0] /home/chinmay/.gradle/caches/8.13/transforms/da9f22d6009a2c6e895681e7617279e4/transformed/jetified-vision-common-17.3.0/AndroidManifest.xml:13:17-124
+86                android:value="com.google.firebase.components.ComponentRegistrar" />
+86-->[com.google.mlkit:vision-common:17.3.0] /home/chinmay/.gradle/caches/8.13/transforms/da9f22d6009a2c6e895681e7617279e4/transformed/jetified-vision-common-17.3.0/AndroidManifest.xml:14:17-82
+87            <meta-data
+87-->[com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:20:13-22:85
+88                android:name="com.google.firebase.components:com.google.mlkit.common.internal.CommonComponentRegistrar"
+88-->[com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:21:17-120
+89                android:value="com.google.firebase.components.ComponentRegistrar" />
+89-->[com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:22:17-82
+90        </service>
+91
+92        <provider
+92-->[com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:9:9-13:38
+93            android:name="com.google.mlkit.common.internal.MlKitInitProvider"
+93-->[com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:10:13-78
+94            android:authorities="com.minimal.uvccamera.mlkitinitprovider"
+94-->[com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:11:13-69
+95            android:exported="false"
+95-->[com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:12:13-37
+96            android:initOrder="99" />
+96-->[com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:13:13-35
+97
+98        <activity
+98-->[com.google.android.gms:play-services-base:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/600e89147b3cc24887c010186ccd5507/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:20:9-22:45
+99            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+99-->[com.google.android.gms:play-services-base:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/600e89147b3cc24887c010186ccd5507/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:20:19-85
+100            android:exported="false"
+100-->[com.google.android.gms:play-services-base:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/600e89147b3cc24887c010186ccd5507/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:22:19-43
+101            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+101-->[com.google.android.gms:play-services-base:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/600e89147b3cc24887c010186ccd5507/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:21:19-78
+102
+103        <meta-data
+103-->[com.google.android.gms:play-services-basement:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/dbba1e2be1a4206a77074b6b73ab091b/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:21:9-23:69
+104            android:name="com.google.android.gms.version"
+104-->[com.google.android.gms:play-services-basement:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/dbba1e2be1a4206a77074b6b73ab091b/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:22:13-58
+105            android:value="@integer/google_play_services_version" />
+105-->[com.google.android.gms:play-services-basement:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/dbba1e2be1a4206a77074b6b73ab091b/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:23:13-66
+106
+107        <provider
+107-->[androidx.emoji2:emoji2:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/e6824132ad21a51f5bd68e19997dca65/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
+108            android:name="androidx.startup.InitializationProvider"
+108-->[androidx.emoji2:emoji2:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/e6824132ad21a51f5bd68e19997dca65/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:25:13-67
+109            android:authorities="com.minimal.uvccamera.androidx-startup"
+109-->[androidx.emoji2:emoji2:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/e6824132ad21a51f5bd68e19997dca65/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:26:13-68
+110            android:exported="false" >
+110-->[androidx.emoji2:emoji2:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/e6824132ad21a51f5bd68e19997dca65/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:27:13-37
+111            <meta-data
+111-->[androidx.emoji2:emoji2:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/e6824132ad21a51f5bd68e19997dca65/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:29:13-31:52
+112                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+112-->[androidx.emoji2:emoji2:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/e6824132ad21a51f5bd68e19997dca65/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:30:17-75
+113                android:value="androidx.startup" />
+113-->[androidx.emoji2:emoji2:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/e6824132ad21a51f5bd68e19997dca65/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:31:17-49
+114            <meta-data
+114-->[androidx.lifecycle:lifecycle-process:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/9847b446801a5990c766dd1de70e77c0/transformed/jetified-lifecycle-process-2.6.1/AndroidManifest.xml:29:13-31:52
+115                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+115-->[androidx.lifecycle:lifecycle-process:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/9847b446801a5990c766dd1de70e77c0/transformed/jetified-lifecycle-process-2.6.1/AndroidManifest.xml:30:17-78
+116                android:value="androidx.startup" />
+116-->[androidx.lifecycle:lifecycle-process:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/9847b446801a5990c766dd1de70e77c0/transformed/jetified-lifecycle-process-2.6.1/AndroidManifest.xml:31:17-49
+117            <meta-data
+117-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:29:13-31:52
+118                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+118-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:30:17-85
+119                android:value="androidx.startup" />
+119-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:31:17-49
+120        </provider>
+121
+122        <receiver
+122-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:34:9-52:20
+123            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+123-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:35:13-76
+124            android:directBootAware="false"
+124-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:36:13-44
+125            android:enabled="true"
+125-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:37:13-35
+126            android:exported="true"
+126-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:38:13-36
+127            android:permission="android.permission.DUMP" >
+127-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:39:13-57
+128            <intent-filter>
+128-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:40:13-42:29
+129                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+129-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:41:17-91
+129-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:41:25-88
+130            </intent-filter>
+131            <intent-filter>
+131-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:43:13-45:29
+132                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+132-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:44:17-85
+132-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:44:25-82
+133            </intent-filter>
+134            <intent-filter>
+134-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:46:13-48:29
+135                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+135-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:47:17-88
+135-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:47:25-85
+136            </intent-filter>
+137            <intent-filter>
+137-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:49:13-51:29
+138                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+138-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:50:17-95
+138-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:50:25-92
+139            </intent-filter>
+140        </receiver>
+141
+142        <service
+142-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:29:9-35:19
+143            android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery"
+143-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:30:13-103
+144            android:exported="false" >
+144-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:31:13-37
+145            <meta-data
+145-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:32:13-34:39
+146                android:name="backend:com.google.android.datatransport.cct.CctBackendFactory"
+146-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:33:17-94
+147                android:value="cct" />
+147-->[com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:34:17-36
+148        </service>
+149        <service
+149-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:26:9-30:19
+150            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService"
+150-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:27:13-117
+151            android:exported="false"
+151-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:28:13-37
+152            android:permission="android.permission.BIND_JOB_SERVICE" >
+152-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:29:13-69
+153        </service>
+154
+155        <receiver
+155-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:32:9-34:40
+156            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver"
+156-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:33:13-132
+157            android:exported="false" />
+157-->[com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:34:13-37
+158    </application>
+159
+160</manifest>

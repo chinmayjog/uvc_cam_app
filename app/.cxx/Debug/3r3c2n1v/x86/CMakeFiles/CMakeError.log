@@ -1,0 +1,42 @@
+Determining if the function pthread_threadid_np exists failed with the following output:
+Change Dir: /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/.cxx/Debug/3r3c2n1v/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/home/chinmay/Android/Sdk/cmake/3.22.1/bin/ninja cmTC_5712e && [1/2] Building C object CMakeFiles/cmTC_5712e.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_5712e
+FAILED: cmTC_5712e 
+: && /home/chinmay/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/bin/clang --target=i686-none-linux-android21 --sysroot=/home/chinmay/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/sysroot -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D__BIONIC_NO_PAGE_SIZE_MACRO -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -DCHECK_FUNCTION_EXISTS=pthread_threadid_np -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--no-undefined-version -Wl,--fatal-warnings -Wl,--no-undefined -Qunused-arguments CMakeFiles/cmTC_5712e.dir/CheckFunctionExists.c.o -o cmTC_5712e  -latomic -lm && :
+ld.lld: error: undefined symbol: pthread_threadid_np
+>>> referenced by CheckFunctionExists.c:17 (/home/chinmay/Android/Sdk/cmake/3.22.1/share/cmake-3.22/Modules/CheckFunctionExists.c:17)
+>>>               CMakeFiles/cmTC_5712e.dir/CheckFunctionExists.c.o:(main)
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+ninja: build stopped: subcommand failed.
+
+
+
+Determining if the TFD_CLOEXEC exist failed with the following output:
+Change Dir: /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/.cxx/Debug/3r3c2n1v/x86/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/home/chinmay/Android/Sdk/cmake/3.22.1/bin/ninja cmTC_2f968 && [1/2] Building C object CMakeFiles/cmTC_2f968.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_2f968.dir/CheckSymbolExists.c.o 
+/home/chinmay/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/bin/clang --target=i686-none-linux-android21 --sysroot=/home/chinmay/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/sysroot   -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D__BIONIC_NO_PAGE_SIZE_MACRO -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fPIE -MD -MT CMakeFiles/cmTC_2f968.dir/CheckSymbolExists.c.o -MF CMakeFiles/cmTC_2f968.dir/CheckSymbolExists.c.o.d -o CMakeFiles/cmTC_2f968.dir/CheckSymbolExists.c.o -c /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/.cxx/Debug/3r3c2n1v/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/.cxx/Debug/3r3c2n1v/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:8:19: error: use of undeclared identifier 'TFD_CLOEXEC'
+    8 |   return ((int*)(&TFD_CLOEXEC))[argc];
+      |                   ^
+1 error generated.
+ninja: build stopped: subcommand failed.
+
+
+File /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/.cxx/Debug/3r3c2n1v/x86/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <sys/eventfd.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef TFD_CLOEXEC
+  return ((int*)(&TFD_CLOEXEC))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}

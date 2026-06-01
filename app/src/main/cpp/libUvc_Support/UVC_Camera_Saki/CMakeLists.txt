@@ -10,7 +10,7 @@ cmake_minimum_required(VERSION 3.10.2)
 project("UVC_Preview")
 
 # Set 16 KB page alignment for Android 15+ compatibility
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-z,max-page-size=16384")
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384")
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to your source code.

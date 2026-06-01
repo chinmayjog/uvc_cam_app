@@ -1,0 +1,130 @@
+[
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xhdpi_country_america.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xhdpi/country_america.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xhdpi_country_china.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xhdpi/country_china.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xxxhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xxxhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-hdpi_ic_launcher_background.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-hdpi/ic_launcher_background.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xhdpi_country_russia.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xhdpi/country_russia.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xhdpi_country_korea.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xhdpi/country_korea.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-hdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-mdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xhdpi_country_germany.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xhdpi/country_germany.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xxhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xxhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xxxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/layout_activity_camera.xml.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/layout/activity_camera.xml"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xhdpi_country_italy.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xhdpi/country_italy.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xhdpi_country_japan.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xhdpi/country_japan.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xxhdpi_ic_launcher_background.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xxhdpi/ic_launcher_background.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/layout_activity_main.xml.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xxxhdpi_ic_launcher_background.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xxxhdpi/ic_launcher_background.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xhdpi_ic_launcher_background.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xhdpi/ic_launcher_background.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xhdpi_country_portugal.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xhdpi/country_portugal.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/xml_device_filter.xml.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/xml/device_filter.xml"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-mdpi_ic_launcher_foreground.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-mdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-hdpi_ic_launcher_foreground.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-hdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xhdpi_ic_launcher_foreground.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xhdpi/ic_launcher_foreground.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-xhdpi_country_thai.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-xhdpi/country_thai.png"
+    },
+    {
+        "merged": "com.minimal.uvccamera.app-debug-33:/mipmap-mdpi_ic_launcher_background.png.flat",
+        "source": "com.minimal.uvccamera.app-main-35:/mipmap-mdpi/ic_launcher_background.png"
+    }
+]

@@ -57,6 +57,8 @@ endif()
 
 #configure_file(config.h.in config.h @ONLY)
 
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384")
+
 add_library(jpeg9 SHARED
         jcapimin.c
         jcapistd.c

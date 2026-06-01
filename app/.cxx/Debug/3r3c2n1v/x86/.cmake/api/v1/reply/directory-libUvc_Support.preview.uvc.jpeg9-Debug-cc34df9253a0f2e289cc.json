@@ -1,0 +1,64 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install"
+		],
+		"files" : 
+		[
+			"libjpeg-version-9/libjpeg9/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 116,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 125,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "library",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/x86/libjpeg9.so"
+			],
+			"targetId" : "jpeg9::@77a071f89f365e5cac88",
+			"targetIndex" : 29,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 2,
+			"component" : "Unspecified",
+			"destination" : "include",
+			"paths" : 
+			[
+				"libjpeg-version-9/libjpeg9/jconfig.h",
+				"libjpeg-version-9/libjpeg9/jerror.h",
+				"libjpeg-version-9/libjpeg9/jmorecfg.h",
+				"libjpeg-version-9/libjpeg9/jpeglib.h"
+			],
+			"type" : "file"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "libUvc_Support/preview/uvc/jpeg9",
+		"source" : "libjpeg-version-9/libjpeg9"
+	}
+}

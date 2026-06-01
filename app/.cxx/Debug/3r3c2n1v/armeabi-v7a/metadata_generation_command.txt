@@ -1,0 +1,22 @@
+                        -H/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp
+-DCMAKE_SYSTEM_NAME=Android
+-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+-DCMAKE_SYSTEM_VERSION=21
+-DANDROID_PLATFORM=android-21
+-DANDROID_ABI=armeabi-v7a
+-DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a
+-DANDROID_NDK=/home/chinmay/Android/Sdk/ndk/27.0.12077973
+-DCMAKE_ANDROID_NDK=/home/chinmay/Android/Sdk/ndk/27.0.12077973
+-DCMAKE_TOOLCHAIN_FILE=/home/chinmay/Android/Sdk/ndk/27.0.12077973/build/cmake/android.toolchain.cmake
+-DCMAKE_MAKE_PROGRAM=/home/chinmay/Android/Sdk/cmake/3.22.1/bin/ninja
+-DCMAKE_CXX_FLAGS=-std=c++11
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/armeabi-v7a
+-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/armeabi-v7a
+-DCMAKE_BUILD_TYPE=Debug
+-B/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/.cxx/Debug/3r3c2n1v/armeabi-v7a
+-GNinja
+-DANDROID_STL=c++_static
+-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON
+-DANDROID_ARM_MODE=arm
+                        Build command args: []
+                        Version: 2

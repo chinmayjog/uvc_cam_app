@@ -1,0 +1,238 @@
+{
+  "buildFiles": [
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/CMakeLists.txt",
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libUvc_Support/CMakeLists.txt",
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libUvc_Support/UVC_Camera_Saki/CMakeLists.txt",
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libjpeg-version-9/libjpeg9/CMakeLists.txt",
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libusb/cmake/CMakeLists.txt",
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libuvc/CMakeLists.txt",
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libuvc/libuvcConfig.cmake.in",
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libuvc/libuvcConfigVersion.cmake.in",
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libyuv/CM_linux_packages.cmake",
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libyuv/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/chinmay/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/.cxx/Debug/5c3s4x1y/armeabi-v7a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/chinmay/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/.cxx/Debug/5c3s4x1y/armeabi-v7a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "Experimental::@765f6470707b23d99a14": {
+      "artifactName": "Experimental",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "ExperimentalBuild::@765f6470707b23d99a14": {
+      "artifactName": "ExperimentalBuild",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "uvc_preview::@8f2502e97232b39772ae": {
+      "artifactName": "uvc_preview",
+      "abi": "armeabi-v7a",
+      "output": "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/5c3s4x1y/obj/armeabi-v7a/libuvc_preview.so",
+      "runtimeFiles": [
+        "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/5c3s4x1y/obj/armeabi-v7a/libuvc.so",
+        "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/5c3s4x1y/obj/armeabi-v7a/libusb1.0.so",
+        "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/5c3s4x1y/obj/armeabi-v7a/libjpeg9.so"
+      ]
+    },
+    "yuvconvert::@7683911a37eeea65b226": {
+      "artifactName": "yuvconvert",
+      "abi": "armeabi-v7a",
+      "output": "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/5c3s4x1y/obj/armeabi-v7a/yuvconvert",
+      "runtimeFiles": []
+    },
+    "testlibusb::@765f6470707b23d99a14": {
+      "artifactName": "testlibusb",
+      "abi": "armeabi-v7a",
+      "output": "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/5c3s4x1y/obj/armeabi-v7a/testlibusb",
+      "runtimeFiles": [
+        "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/5c3s4x1y/obj/armeabi-v7a/libusb1.0.so"
+      ]
+    },
+    "NightlyTest::@765f6470707b23d99a14": {
+      "artifactName": "NightlyTest",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "ContinuousTest::@765f6470707b23d99a14": {
+      "artifactName": "ContinuousTest",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "ContinuousCoverage::@765f6470707b23d99a14": {
+      "artifactName": "ContinuousCoverage",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "NightlyCoverage::@765f6470707b23d99a14": {
+      "artifactName": "NightlyCoverage",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "NightlyMemoryCheck::@765f6470707b23d99a14": {
+      "artifactName": "NightlyMemoryCheck",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "ContinuousBuild::@765f6470707b23d99a14": {
+      "artifactName": "ContinuousBuild",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "jpeg9::@77a071f89f365e5cac88": {
+      "artifactName": "jpeg9",
+      "abi": "armeabi-v7a",
+      "output": "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/5c3s4x1y/obj/armeabi-v7a/libjpeg9.so",
+      "runtimeFiles": []
+    },
+    "uvc::@96ffac7c970fc7073057": {
+      "artifactName": "uvc",
+      "abi": "armeabi-v7a",
+      "output": "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/5c3s4x1y/obj/armeabi-v7a/libuvc.so",
+      "runtimeFiles": [
+        "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/5c3s4x1y/obj/armeabi-v7a/libusb1.0.so",
+        "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/5c3s4x1y/obj/armeabi-v7a/libjpeg9.so"
+      ]
+    },
+    "ContinuousMemCheck::@765f6470707b23d99a14": {
+      "artifactName": "ContinuousMemCheck",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "ContinuousConfigure::@765f6470707b23d99a14": {
+      "artifactName": "ContinuousConfigure",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "NightlyUpdate::@765f6470707b23d99a14": {
+      "artifactName": "NightlyUpdate",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "ContinuousUpdate::@765f6470707b23d99a14": {
+      "artifactName": "ContinuousUpdate",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "ExperimentalCoverage::@765f6470707b23d99a14": {
+      "artifactName": "ExperimentalCoverage",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "NightlyMemCheck::@765f6470707b23d99a14": {
+      "artifactName": "NightlyMemCheck",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "ExperimentalConfigure::@765f6470707b23d99a14": {
+      "artifactName": "ExperimentalConfigure",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "ExperimentalStart::@765f6470707b23d99a14": {
+      "artifactName": "ExperimentalStart",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "ExperimentalTest::@765f6470707b23d99a14": {
+      "artifactName": "ExperimentalTest",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "ContinuousStart::@765f6470707b23d99a14": {
+      "artifactName": "ContinuousStart",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "Uvc_Support::@9c8eae7f8529dbd6b630": {
+      "artifactName": "Uvc_Support",
+      "abi": "armeabi-v7a",
+      "output": "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/5c3s4x1y/obj/armeabi-v7a/libUvc_Support.so",
+      "runtimeFiles": [
+        "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/5c3s4x1y/obj/armeabi-v7a/libuvc_preview.so",
+        "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/5c3s4x1y/obj/armeabi-v7a/libuvc.so",
+        "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/5c3s4x1y/obj/armeabi-v7a/libusb1.0.so",
+        "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/5c3s4x1y/obj/armeabi-v7a/libjpeg9.so"
+      ]
+    },
+    "NightlyConfigure::@765f6470707b23d99a14": {
+      "artifactName": "NightlyConfigure",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "NightlyStart::@765f6470707b23d99a14": {
+      "artifactName": "NightlyStart",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "ExperimentalUpdate::@765f6470707b23d99a14": {
+      "artifactName": "ExperimentalUpdate",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "ContinuousSubmit::@765f6470707b23d99a14": {
+      "artifactName": "ContinuousSubmit",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "ExperimentalMemCheck::@765f6470707b23d99a14": {
+      "artifactName": "ExperimentalMemCheck",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "Nightly::@765f6470707b23d99a14": {
+      "artifactName": "Nightly",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "Continuous::@765f6470707b23d99a14": {
+      "artifactName": "Continuous",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "usb1.0::@765f6470707b23d99a14": {
+      "artifactName": "usb1.0",
+      "abi": "armeabi-v7a",
+      "output": "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/5c3s4x1y/obj/armeabi-v7a/libusb1.0.so",
+      "runtimeFiles": []
+    },
+    "ExperimentalSubmit::@765f6470707b23d99a14": {
+      "artifactName": "ExperimentalSubmit",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "NightlyBuild::@765f6470707b23d99a14": {
+      "artifactName": "NightlyBuild",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "yuv_shared::@7683911a37eeea65b226": {
+      "artifactName": "yuv_shared",
+      "abi": "armeabi-v7a",
+      "output": "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/5c3s4x1y/obj/armeabi-v7a/libyuv.so",
+      "runtimeFiles": []
+    },
+    "NightlySubmit::@765f6470707b23d99a14": {
+      "artifactName": "NightlySubmit",
+      "abi": "armeabi-v7a",
+      "runtimeFiles": []
+    },
+    "yuv::@7683911a37eeea65b226": {
+      "artifactName": "yuv",
+      "abi": "armeabi-v7a",
+      "output": "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/.cxx/Debug/5c3s4x1y/armeabi-v7a/libUvc_Support/yuv/libyuv.a",
+      "runtimeFiles": []
+    }
+  }
+}

@@ -1,0 +1,2 @@
+ninja: Entering directory `/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/.cxx/Debug/5c3s4x1y/x86_64'
+ninja: no work to do.

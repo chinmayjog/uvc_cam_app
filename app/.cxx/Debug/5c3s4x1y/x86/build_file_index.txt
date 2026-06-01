@@ -1,0 +1,10 @@
+/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/CMakeLists.txt
+/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libUvc_Support/CMakeLists.txt
+/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libUvc_Support/UVC_Camera_Saki/CMakeLists.txt
+/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libjpeg-version-9/libjpeg9/CMakeLists.txt
+/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libusb/cmake/CMakeLists.txt
+/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libuvc/CMakeLists.txt
+/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libuvc/libuvcConfig.cmake.in
+/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libuvc/libuvcConfigVersion.cmake.in
+/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libyuv/CM_linux_packages.cmake
+/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libyuv/CMakeLists.txt

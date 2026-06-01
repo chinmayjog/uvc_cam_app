@@ -1,0 +1,259 @@
+{
+  "buildFiles": [
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/CMakeLists.txt",
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libUvc_Support/CMakeLists.txt",
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libUvc_Support/UVC_Camera_Saki/CMakeLists.txt",
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libjpeg-version-9/libjpeg9/CMakeLists.txt",
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libusb/cmake/CMakeLists.txt",
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libuvc/CMakeLists.txt",
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libuvc/libuvcConfig.cmake.in",
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libuvc/libuvcConfigVersion.cmake.in",
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libyuv/CM_linux_packages.cmake",
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/cpp/libyuv/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/home/chinmay/Android/Sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/.cxx/Debug/3r3c2n1v/arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/home/chinmay/Android/Sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/.cxx/Debug/3r3c2n1v/arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "Continuous::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "Continuous"
+    },
+    "ContinuousBuild::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "ContinuousBuild"
+    },
+    "ContinuousConfigure::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "ContinuousConfigure"
+    },
+    "ContinuousCoverage::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "ContinuousCoverage"
+    },
+    "ContinuousMemCheck::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "ContinuousMemCheck"
+    },
+    "ContinuousStart::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "ContinuousStart"
+    },
+    "ContinuousSubmit::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "ContinuousSubmit"
+    },
+    "ContinuousTest::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "ContinuousTest"
+    },
+    "ContinuousUpdate::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "ContinuousUpdate"
+    },
+    "Experimental::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "Experimental"
+    },
+    "ExperimentalBuild::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "ExperimentalBuild"
+    },
+    "ExperimentalConfigure::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "ExperimentalConfigure"
+    },
+    "ExperimentalCoverage::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "ExperimentalCoverage"
+    },
+    "ExperimentalMemCheck::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "ExperimentalMemCheck"
+    },
+    "ExperimentalStart::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "ExperimentalStart"
+    },
+    "ExperimentalSubmit::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "ExperimentalSubmit"
+    },
+    "ExperimentalTest::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "ExperimentalTest"
+    },
+    "ExperimentalUpdate::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "ExperimentalUpdate"
+    },
+    "Nightly::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "Nightly"
+    },
+    "NightlyBuild::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "NightlyBuild"
+    },
+    "NightlyConfigure::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "NightlyConfigure"
+    },
+    "NightlyCoverage::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "NightlyCoverage"
+    },
+    "NightlyMemCheck::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "NightlyMemCheck"
+    },
+    "NightlyMemoryCheck::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "NightlyMemoryCheck"
+    },
+    "NightlyStart::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "NightlyStart"
+    },
+    "NightlySubmit::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "NightlySubmit"
+    },
+    "NightlyTest::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "NightlyTest"
+    },
+    "NightlyUpdate::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "NightlyUpdate"
+    },
+    "Uvc_Support::@9c8eae7f8529dbd6b630": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "Uvc_Support",
+      "output": "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/arm64-v8a/libUvc_Support.so",
+      "runtimeFiles": [
+        "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/arm64-v8a/libuvc_preview.so",
+        "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/arm64-v8a/libuvc.so",
+        "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/arm64-v8a/libusb1.0.so",
+        "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/arm64-v8a/libjpeg9.so"
+      ]
+    },
+    "jpeg9::@77a071f89f365e5cac88": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "jpeg9",
+      "output": "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/arm64-v8a/libjpeg9.so",
+      "runtimeFiles": []
+    },
+    "testlibusb::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "testlibusb",
+      "output": "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/arm64-v8a/testlibusb",
+      "runtimeFiles": [
+        "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/arm64-v8a/libusb1.0.so"
+      ]
+    },
+    "usb1.0::@765f6470707b23d99a14": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "usb1.0",
+      "output": "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/arm64-v8a/libusb1.0.so",
+      "runtimeFiles": []
+    },
+    "uvc::@96ffac7c970fc7073057": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "uvc",
+      "output": "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/arm64-v8a/libuvc.so",
+      "runtimeFiles": [
+        "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/arm64-v8a/libusb1.0.so",
+        "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/arm64-v8a/libjpeg9.so"
+      ]
+    },
+    "uvc_preview::@8f2502e97232b39772ae": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "uvc_preview",
+      "output": "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/arm64-v8a/libuvc_preview.so",
+      "runtimeFiles": [
+        "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/arm64-v8a/libuvc.so",
+        "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/arm64-v8a/libusb1.0.so",
+        "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/arm64-v8a/libjpeg9.so"
+      ]
+    },
+    "yuv::@7683911a37eeea65b226": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "yuv",
+      "output": "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/.cxx/Debug/3r3c2n1v/arm64-v8a/libUvc_Support/yuv/libyuv.a"
+    },
+    "yuv_shared::@7683911a37eeea65b226": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "yuv_shared",
+      "output": "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/arm64-v8a/libyuv.so",
+      "runtimeFiles": []
+    },
+    "yuvconvert::@7683911a37eeea65b226": {
+      "toolchain": "toolchain",
+      "abi": "arm64-v8a",
+      "artifactName": "yuvconvert",
+      "output": "/home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/build/intermediates/cxx/Debug/3r3c2n1v/obj/arm64-v8a/yuvconvert",
+      "runtimeFiles": []
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/home/chinmay/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/bin/clang.lld",
+      "cppCompilerExecutable": "/home/chinmay/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++.lld"
+    }
+  },
+  "cFileExtensions": [
+    "c"
+  ],
+  "cppFileExtensions": [
+    "cpp",
+    "cc"
+  ]
+}

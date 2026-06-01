@@ -59,6 +59,8 @@ configure_file(config.h.in config.h @ONLY)
 
 set(libusb_ROOT ../libusb)
 
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384")
+
 add_library(usb1.0 SHARED
     "${libusb_ROOT}/core.c"
     "${libusb_ROOT}/descriptor.c"

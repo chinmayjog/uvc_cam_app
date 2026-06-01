@@ -1,0 +1,15 @@
+The purpose of development of this app is to document the faulty package from conveyer belt. 
+Whenever the faulty package is detected, the belt is stopped and app is opened for documentation.
+The user connects upto 4 cameras to the android device using USB port, but only one at a time.
+The app should detect the connected camera, and ensure that there is only 1 usb camera connected to the device at a time.
+If there are more than 1 USB cameras connected, it should show a notification and ask the user to disconnect all other cameras.
+Once this is done and only 1 camera is found connected, user should be shown a screen with 4 buttons, namely: Camera 1, Camera 2, Camera 3, Camera 4.
+Based on need, user will click one of these buttons.
+On click of this button, app cache should be cleared, camera should be detected, and frame rate and protocol and any other required settings should be negotiated, and a preview of camera is to be shown to the user. Also a capture button and back button should be visible on the screen.
+Onc click of capture button, a photo should be clicked from the USB camera.
+User should be given option to detect OCR from the clicked image, or just save directly.
+If user selects the OCR option, then text from the image should be extracted, and the image and text should be saved as PDF in folder as per the button clicked on the initial screen (for example, if camera1 is clicked, then file should be saved in camera 1 folder)
+If user selects to save directly, then image should be saved as pdf file in the respective camera folder as selected by user on initial screen.
+The PDF file should have the timestamp and camera name in the name of the file.
+On successful saving of file, app cache should be cleared and user is to be taken to initial screen with 4 camera buttons visible.
+

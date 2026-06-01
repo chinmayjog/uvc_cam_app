@@ -1,0 +1,525 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:2:1-55:12
+INJECTED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:2:1-55:12
+INJECTED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:2:1-55:12
+INJECTED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:2:1-55:12
+MERGED from [com.google.android.material:material:1.11.0] /home/chinmay/.gradle/caches/8.13/transforms/599a5935c2166e8e0b398a0aed9a2d82/transformed/material-1.11.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /home/chinmay/.gradle/caches/8.13/transforms/7eb027e7305127024cd5dad21ffe3a42/transformed/constraintlayout-2.1.4/AndroidManifest.xml:2:1-11:12
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /home/chinmay/.gradle/caches/8.13/transforms/7011d89884e6a3063a6ce55edd9f882f/transformed/jetified-appcompat-resources-1.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.appcompat:appcompat:1.6.1] /home/chinmay/.gradle/caches/8.13/transforms/9751129cf9a082d51cb0234e0f752002/transformed/appcompat-1.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.mlkit:text-recognition:16.0.0] /home/chinmay/.gradle/caches/8.13/transforms/683625a5657784ea3724539a9eab75d1/transformed/jetified-text-recognition-16.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/3ee5bfccd1354125e44d3f4318e454e3/transformed/jetified-viewpager2-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.gms:play-services-mlkit-text-recognition:19.0.0] /home/chinmay/.gradle/caches/8.13/transforms/ccc27301f27a290f950fd1e6dfeeedfb/transformed/jetified-play-services-mlkit-text-recognition-19.0.0/AndroidManifest.xml:2:1-8:12
+MERGED from [com.google.mlkit:text-recognition-bundled-common:16.0.0] /home/chinmay/.gradle/caches/8.13/transforms/805905d7aeb0c3ca3e2cafb46d39e0fd/transformed/jetified-text-recognition-bundled-common-16.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.gms:play-services-mlkit-text-recognition-common:19.0.0] /home/chinmay/.gradle/caches/8.13/transforms/08fe52293ac6f16df53342f051e90efd/transformed/jetified-play-services-mlkit-text-recognition-common-19.0.0/AndroidManifest.xml:2:1-18:12
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/chinmay/.gradle/caches/8.13/transforms/da9f22d6009a2c6e895681e7617279e4/transformed/jetified-vision-common-17.3.0/AndroidManifest.xml:2:1-18:12
+MERGED from [com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:2:1-26:12
+MERGED from [com.google.android.gms:play-services-base:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/600e89147b3cc24887c010186ccd5507/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:16:1-24:12
+MERGED from [com.google.mlkit:vision-interfaces:16.2.0] /home/chinmay/.gradle/caches/8.13/transforms/24f29c8e427c7a235c893ce4f7b98c22/transformed/jetified-vision-interfaces-16.2.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /home/chinmay/.gradle/caches/8.13/transforms/02cd3ebacf72934bbe727aa5a41e0b20/transformed/jetified-play-services-tasks-18.0.2/AndroidManifest.xml:2:1-6:12
+MERGED from [com.google.android.gms:play-services-basement:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/dbba1e2be1a4206a77074b6b73ab091b/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:16:1-26:12
+MERGED from [androidx.fragment:fragment:1.3.6] /home/chinmay/.gradle/caches/8.13/transforms/de1402ef7b077b76eca13e0e49313b39/transformed/fragment-1.3.6/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.activity:activity:1.8.0] /home/chinmay/.gradle/caches/8.13/transforms/d33c0b828e9bd8b2f7b95a2b7615a282/transformed/jetified-activity-1.8.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/07fcdfe7d553d9485c72b377ed9853b3/transformed/jetified-emoji2-views-helper-1.2.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.emoji2:emoji2:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/e6824132ad21a51f5bd68e19997dca65/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] /home/chinmay/.gradle/caches/8.13/transforms/7b24e1314228ef9a88fc29a881a5d97a/transformed/drawerlayout-1.1.1/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /home/chinmay/.gradle/caches/8.13/transforms/3a20a8566657c6853b17a1eed699b1ee/transformed/coordinatorlayout-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/0bc8c173b4a67b82e6ac4846dc451cb1/transformed/dynamicanimation-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.transition:transition:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/0e58a60be73f68d476731c530be244e5/transformed/transition-1.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/chinmay/.gradle/caches/8.13/transforms/93c96da67cccfd07dde764e91896b18c/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/chinmay/.gradle/caches/8.13/transforms/fc1af002c11c96c9834d19d67583f5d2/transformed/vectordrawable-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/f8af5b77754b1bc0f1a6fe4c2f855cd2/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/a34792fd085fdf1f12c80c39dda794a7/transformed/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate:1.2.1] /home/chinmay/.gradle/caches/8.13/transforms/3427b18a43a70d4c386cdf74a70b1447/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/9847b446801a5990c766dd1de70e77c0/transformed/jetified-lifecycle-process-2.6.1/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/512dddabe1408ac23a6c65891cc89f5a/transformed/lifecycle-livedata-core-2.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/f2d682b0e7bce19733757aa5323cb56a/transformed/lifecycle-livedata-2.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/8f99eca147a811c8455705bf51a8554e/transformed/lifecycle-viewmodel-2.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/3915c8e4a54f1361a4b50ccbe6389f80/transformed/lifecycle-runtime-2.6.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/ca2fbd0cdb548ba42b2987cfe6b62fd5/transformed/jetified-lifecycle-viewmodel-savedstate-2.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core-ktx:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/54e49dcc46116ffb12528647f78cfe20/transformed/jetified-core-ktx-1.9.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/ce9344e2943187a32a45450a6c7edaab/transformed/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] /home/chinmay/.gradle/caches/8.13/transforms/ebd2aa0318f345c7d6dfc3a69afbf193/transformed/recyclerview-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.customview:customview:1.1.0] /home/chinmay/.gradle/caches/8.13/transforms/7baa3aec0124e9265345b77b09d593f9/transformed/customview-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/4393d66053a2d88a53d125480d5b43d7/transformed/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.cardview:cardview:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/b8b6d42c6730402ebe1ed69b252eb7e4/transformed/cardview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/chinmay/.gradle/caches/8.13/transforms/97be29755e6b940ef3dec554e527f2c8/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:17:1-55:12
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/chinmay/.gradle/caches/8.13/transforms/67b5f746dc5ca3f37a0531f2211c36b4/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.tracing:tracing:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/b65b8f856d20f8fcb1147da66bb73469/transformed/jetified-tracing-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:15:1-38:12
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:15:1-41:12
+MERGED from [com.google.android.datatransport:transport-api:2.2.1] /home/chinmay/.gradle/caches/8.13/transforms/cbe1740747175cf00e33e7a1923bfc74/transformed/jetified-transport-api-2.2.1/AndroidManifest.xml:15:1-22:12
+MERGED from [com.google.firebase:firebase-components:16.1.0] /home/chinmay/.gradle/caches/8.13/transforms/1fcff35c608481d21a3ebd732493cdaf/transformed/jetified-firebase-components-16.1.0/AndroidManifest.xml:15:1-23:12
+MERGED from [com.google.firebase:firebase-encoders-json:17.1.0] /home/chinmay/.gradle/caches/8.13/transforms/da671999a8888e82e2343f99bb813a4d/transformed/jetified-firebase-encoders-json-17.1.0/AndroidManifest.xml:15:1-23:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/fd03f2aa5276cf78db053a07078f9689/transformed/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /home/chinmay/.gradle/caches/8.13/transforms/a04584770a49cc02449dadedd502c584/transformed/core-runtime-2.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.documentfile:documentfile:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/97069dfc2f9675b7bd2ab4490ce44068/transformed/documentfile-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/119e44b14be8f134ca7864e03b684282/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.print:print:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/3420ee9bcc985541a2cc9e76873321db/transformed/print-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.exifinterface:exifinterface:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/efcb2b834a6221aaf5cf8cfbf0e75e4a/transformed/exifinterface-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.annotation:annotation-experimental:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/76d61942979747a03778cc8f6ce979ac/transformed/jetified-annotation-experimental-1.3.0/AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.android.odml:image:1.0.0-beta1] /home/chinmay/.gradle/caches/8.13/transforms/62ba8ae4b05e8a88c44533abfe1a7489/transformed/jetified-image-1.0.0-beta1/AndroidManifest.xml:2:1-9:12
+	package
+		INJECTED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml
+	xmlns:tools
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:3:5-51
+	android:versionCode
+		INJECTED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:2:11-69
+uses-permission#android.permission.USB_PERMISSION
+ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:5:5-73
+	android:name
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:5:22-70
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:6:5-7:38
+	android:maxSdkVersion
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:7:9-35
+	android:name
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:6:22-78
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:8:5-9:38
+	android:maxSdkVersion
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:9:9-35
+	android:name
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:8:22-77
+uses-permission#android.permission.READ_MEDIA_IMAGES
+ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:10:5-76
+	android:name
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:10:22-73
+uses-permission#android.permission.READ_MEDIA_VIDEO
+ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:11:5-75
+	android:name
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:11:22-72
+uses-permission#android.permission.CAMERA
+ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:12:5-65
+	android:name
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:12:22-62
+uses-feature#android.hardware.usb.host
+ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:14:5-87
+	android:required
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:14:60-84
+	android:name
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:14:19-59
+uses-feature#android.hardware.camera
+ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:15:5-85
+	android:required
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:15:58-82
+	android:name
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:15:19-57
+application
+ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:17:5-53:19
+INJECTED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:17:5-53:19
+MERGED from [com.google.android.material:material:1.11.0] /home/chinmay/.gradle/caches/8.13/transforms/599a5935c2166e8e0b398a0aed9a2d82/transformed/material-1.11.0/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.material:material:1.11.0] /home/chinmay/.gradle/caches/8.13/transforms/599a5935c2166e8e0b398a0aed9a2d82/transformed/material-1.11.0/AndroidManifest.xml:22:5-20
+MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /home/chinmay/.gradle/caches/8.13/transforms/7eb027e7305127024cd5dad21ffe3a42/transformed/constraintlayout-2.1.4/AndroidManifest.xml:9:5-20
+MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /home/chinmay/.gradle/caches/8.13/transforms/7eb027e7305127024cd5dad21ffe3a42/transformed/constraintlayout-2.1.4/AndroidManifest.xml:9:5-20
+MERGED from [com.google.android.gms:play-services-mlkit-text-recognition-common:19.0.0] /home/chinmay/.gradle/caches/8.13/transforms/08fe52293ac6f16df53342f051e90efd/transformed/jetified-play-services-mlkit-text-recognition-common-19.0.0/AndroidManifest.xml:8:5-16:19
+MERGED from [com.google.android.gms:play-services-mlkit-text-recognition-common:19.0.0] /home/chinmay/.gradle/caches/8.13/transforms/08fe52293ac6f16df53342f051e90efd/transformed/jetified-play-services-mlkit-text-recognition-common-19.0.0/AndroidManifest.xml:8:5-16:19
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/chinmay/.gradle/caches/8.13/transforms/da9f22d6009a2c6e895681e7617279e4/transformed/jetified-vision-common-17.3.0/AndroidManifest.xml:8:5-16:19
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/chinmay/.gradle/caches/8.13/transforms/da9f22d6009a2c6e895681e7617279e4/transformed/jetified-vision-common-17.3.0/AndroidManifest.xml:8:5-16:19
+MERGED from [com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:8:5-24:19
+MERGED from [com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:8:5-24:19
+MERGED from [com.google.android.gms:play-services-base:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/600e89147b3cc24887c010186ccd5507/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:19:5-23:19
+MERGED from [com.google.android.gms:play-services-base:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/600e89147b3cc24887c010186ccd5507/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:19:5-23:19
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /home/chinmay/.gradle/caches/8.13/transforms/02cd3ebacf72934bbe727aa5a41e0b20/transformed/jetified-play-services-tasks-18.0.2/AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /home/chinmay/.gradle/caches/8.13/transforms/02cd3ebacf72934bbe727aa5a41e0b20/transformed/jetified-play-services-tasks-18.0.2/AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-basement:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/dbba1e2be1a4206a77074b6b73ab091b/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:20:5-24:19
+MERGED from [com.google.android.gms:play-services-basement:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/dbba1e2be1a4206a77074b6b73ab091b/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:20:5-24:19
+MERGED from [androidx.emoji2:emoji2:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/e6824132ad21a51f5bd68e19997dca65/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.emoji2:emoji2:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/e6824132ad21a51f5bd68e19997dca65/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/9847b446801a5990c766dd1de70e77c0/transformed/jetified-lifecycle-process-2.6.1/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/9847b446801a5990c766dd1de70e77c0/transformed/jetified-lifecycle-process-2.6.1/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:28:5-89
+MERGED from [androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:28:5-89
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/chinmay/.gradle/caches/8.13/transforms/97be29755e6b940ef3dec554e527f2c8/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/chinmay/.gradle/caches/8.13/transforms/97be29755e6b940ef3dec554e527f2c8/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/chinmay/.gradle/caches/8.13/transforms/67b5f746dc5ca3f37a0531f2211c36b4/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/chinmay/.gradle/caches/8.13/transforms/67b5f746dc5ca3f37a0531f2211c36b4/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:28:5-36:19
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:28:5-36:19
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:25:5-39:19
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:25:5-39:19
+MERGED from [com.google.android.odml:image:1.0.0-beta1] /home/chinmay/.gradle/caches/8.13/transforms/62ba8ae4b05e8a88c44533abfe1a7489/transformed/jetified-image-1.0.0-beta1/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.odml:image:1.0.0-beta1] /home/chinmay/.gradle/caches/8.13/transforms/62ba8ae4b05e8a88c44533abfe1a7489/transformed/jetified-image-1.0.0-beta1/AndroidManifest.xml:7:5-20
+	android:extractNativeLibs
+		INJECTED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml
+	android:requestLegacyExternalStorage
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:24:9-52
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:28:18-86
+	android:supportsRtl
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:22:9-35
+	android:label
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:20:9-41
+	android:roundIcon
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:21:9-54
+	android:icon
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:19:9-43
+	android:allowBackup
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:18:9-35
+	android:theme
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:23:9-54
+meta-data#com.google.mlkit.vision.DEPENDENCIES
+ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:26:9-28:35
+	android:value
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:28:13-32
+	android:name
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:27:13-64
+activity#com.minimal.uvccamera.MainActivity
+ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:30:9-47:20
+	android:screenOrientation
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:33:13-49
+	android:exported
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:32:13-36
+	android:name
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:31:13-41
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:34:13-37:29
+action#android.intent.action.MAIN
+ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:35:17-69
+	android:name
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:35:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:36:17-77
+	android:name
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:36:27-74
+intent-filter#action:name:android.hardware.usb.action.USB_DEVICE_ATTACHED+category:name:android.intent.category.DEFAULT
+ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:39:13-42:29
+action#android.hardware.usb.action.USB_DEVICE_ATTACHED
+ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:40:17-90
+	android:name
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:40:25-87
+category#android.intent.category.DEFAULT
+ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:41:17-76
+	android:name
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:41:27-73
+meta-data#android.hardware.usb.action.USB_DEVICE_ATTACHED
+ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:44:13-46:57
+	android:resource
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:46:17-54
+	android:name
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:45:17-79
+activity#com.minimal.uvccamera.CameraActivity
+ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:49:9-52:52
+	android:screenOrientation
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:52:13-49
+	android:exported
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:51:13-37
+	android:name
+		ADDED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml:50:13-43
+uses-sdk
+INJECTED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml
+INJECTED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml
+MERGED from [com.google.android.material:material:1.11.0] /home/chinmay/.gradle/caches/8.13/transforms/599a5935c2166e8e0b398a0aed9a2d82/transformed/material-1.11.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.material:material:1.11.0] /home/chinmay/.gradle/caches/8.13/transforms/599a5935c2166e8e0b398a0aed9a2d82/transformed/material-1.11.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /home/chinmay/.gradle/caches/8.13/transforms/7eb027e7305127024cd5dad21ffe3a42/transformed/constraintlayout-2.1.4/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /home/chinmay/.gradle/caches/8.13/transforms/7eb027e7305127024cd5dad21ffe3a42/transformed/constraintlayout-2.1.4/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /home/chinmay/.gradle/caches/8.13/transforms/7011d89884e6a3063a6ce55edd9f882f/transformed/jetified-appcompat-resources-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /home/chinmay/.gradle/caches/8.13/transforms/7011d89884e6a3063a6ce55edd9f882f/transformed/jetified-appcompat-resources-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat:1.6.1] /home/chinmay/.gradle/caches/8.13/transforms/9751129cf9a082d51cb0234e0f752002/transformed/appcompat-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat:1.6.1] /home/chinmay/.gradle/caches/8.13/transforms/9751129cf9a082d51cb0234e0f752002/transformed/appcompat-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [com.google.mlkit:text-recognition:16.0.0] /home/chinmay/.gradle/caches/8.13/transforms/683625a5657784ea3724539a9eab75d1/transformed/jetified-text-recognition-16.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.mlkit:text-recognition:16.0.0] /home/chinmay/.gradle/caches/8.13/transforms/683625a5657784ea3724539a9eab75d1/transformed/jetified-text-recognition-16.0.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/3ee5bfccd1354125e44d3f4318e454e3/transformed/jetified-viewpager2-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.viewpager2:viewpager2:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/3ee5bfccd1354125e44d3f4318e454e3/transformed/jetified-viewpager2-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.gms:play-services-mlkit-text-recognition:19.0.0] /home/chinmay/.gradle/caches/8.13/transforms/ccc27301f27a290f950fd1e6dfeeedfb/transformed/jetified-play-services-mlkit-text-recognition-19.0.0/AndroidManifest.xml:6:5-44
+MERGED from [com.google.android.gms:play-services-mlkit-text-recognition:19.0.0] /home/chinmay/.gradle/caches/8.13/transforms/ccc27301f27a290f950fd1e6dfeeedfb/transformed/jetified-play-services-mlkit-text-recognition-19.0.0/AndroidManifest.xml:6:5-44
+MERGED from [com.google.mlkit:text-recognition-bundled-common:16.0.0] /home/chinmay/.gradle/caches/8.13/transforms/805905d7aeb0c3ca3e2cafb46d39e0fd/transformed/jetified-text-recognition-bundled-common-16.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.mlkit:text-recognition-bundled-common:16.0.0] /home/chinmay/.gradle/caches/8.13/transforms/805905d7aeb0c3ca3e2cafb46d39e0fd/transformed/jetified-text-recognition-bundled-common-16.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-mlkit-text-recognition-common:19.0.0] /home/chinmay/.gradle/caches/8.13/transforms/08fe52293ac6f16df53342f051e90efd/transformed/jetified-play-services-mlkit-text-recognition-common-19.0.0/AndroidManifest.xml:6:5-44
+MERGED from [com.google.android.gms:play-services-mlkit-text-recognition-common:19.0.0] /home/chinmay/.gradle/caches/8.13/transforms/08fe52293ac6f16df53342f051e90efd/transformed/jetified-play-services-mlkit-text-recognition-common-19.0.0/AndroidManifest.xml:6:5-44
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/chinmay/.gradle/caches/8.13/transforms/da9f22d6009a2c6e895681e7617279e4/transformed/jetified-vision-common-17.3.0/AndroidManifest.xml:6:5-44
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/chinmay/.gradle/caches/8.13/transforms/da9f22d6009a2c6e895681e7617279e4/transformed/jetified-vision-common-17.3.0/AndroidManifest.xml:6:5-44
+MERGED from [com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:6:5-44
+MERGED from [com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:6:5-44
+MERGED from [com.google.android.gms:play-services-base:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/600e89147b3cc24887c010186ccd5507/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-base:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/600e89147b3cc24887c010186ccd5507/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:18:5-43
+MERGED from [com.google.mlkit:vision-interfaces:16.2.0] /home/chinmay/.gradle/caches/8.13/transforms/24f29c8e427c7a235c893ce4f7b98c22/transformed/jetified-vision-interfaces-16.2.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.mlkit:vision-interfaces:16.2.0] /home/chinmay/.gradle/caches/8.13/transforms/24f29c8e427c7a235c893ce4f7b98c22/transformed/jetified-vision-interfaces-16.2.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /home/chinmay/.gradle/caches/8.13/transforms/02cd3ebacf72934bbe727aa5a41e0b20/transformed/jetified-play-services-tasks-18.0.2/AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-tasks:18.0.2] /home/chinmay/.gradle/caches/8.13/transforms/02cd3ebacf72934bbe727aa5a41e0b20/transformed/jetified-play-services-tasks-18.0.2/AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-basement:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/dbba1e2be1a4206a77074b6b73ab091b/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-basement:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/dbba1e2be1a4206a77074b6b73ab091b/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:18:5-43
+MERGED from [androidx.fragment:fragment:1.3.6] /home/chinmay/.gradle/caches/8.13/transforms/de1402ef7b077b76eca13e0e49313b39/transformed/fragment-1.3.6/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.3.6] /home/chinmay/.gradle/caches/8.13/transforms/de1402ef7b077b76eca13e0e49313b39/transformed/fragment-1.3.6/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.8.0] /home/chinmay/.gradle/caches/8.13/transforms/d33c0b828e9bd8b2f7b95a2b7615a282/transformed/jetified-activity-1.8.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.8.0] /home/chinmay/.gradle/caches/8.13/transforms/d33c0b828e9bd8b2f7b95a2b7615a282/transformed/jetified-activity-1.8.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/07fcdfe7d553d9485c72b377ed9853b3/transformed/jetified-emoji2-views-helper-1.2.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/07fcdfe7d553d9485c72b377ed9853b3/transformed/jetified-emoji2-views-helper-1.2.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/e6824132ad21a51f5bd68e19997dca65/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.emoji2:emoji2:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/e6824132ad21a51f5bd68e19997dca65/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] /home/chinmay/.gradle/caches/8.13/transforms/7b24e1314228ef9a88fc29a881a5d97a/transformed/drawerlayout-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] /home/chinmay/.gradle/caches/8.13/transforms/7b24e1314228ef9a88fc29a881a5d97a/transformed/drawerlayout-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /home/chinmay/.gradle/caches/8.13/transforms/3a20a8566657c6853b17a1eed699b1ee/transformed/coordinatorlayout-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.1.0] /home/chinmay/.gradle/caches/8.13/transforms/3a20a8566657c6853b17a1eed699b1ee/transformed/coordinatorlayout-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/0bc8c173b4a67b82e6ac4846dc451cb1/transformed/dynamicanimation-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/0bc8c173b4a67b82e6ac4846dc451cb1/transformed/dynamicanimation-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.transition:transition:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/0e58a60be73f68d476731c530be244e5/transformed/transition-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/0e58a60be73f68d476731c530be244e5/transformed/transition-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/chinmay/.gradle/caches/8.13/transforms/93c96da67cccfd07dde764e91896b18c/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/chinmay/.gradle/caches/8.13/transforms/93c96da67cccfd07dde764e91896b18c/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/chinmay/.gradle/caches/8.13/transforms/fc1af002c11c96c9834d19d67583f5d2/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/chinmay/.gradle/caches/8.13/transforms/fc1af002c11c96c9834d19d67583f5d2/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/f8af5b77754b1bc0f1a6fe4c2f855cd2/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/f8af5b77754b1bc0f1a6fe4c2f855cd2/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/a34792fd085fdf1f12c80c39dda794a7/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/a34792fd085fdf1f12c80c39dda794a7/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /home/chinmay/.gradle/caches/8.13/transforms/3427b18a43a70d4c386cdf74a70b1447/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /home/chinmay/.gradle/caches/8.13/transforms/3427b18a43a70d4c386cdf74a70b1447/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/9847b446801a5990c766dd1de70e77c0/transformed/jetified-lifecycle-process-2.6.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/9847b446801a5990c766dd1de70e77c0/transformed/jetified-lifecycle-process-2.6.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/512dddabe1408ac23a6c65891cc89f5a/transformed/lifecycle-livedata-core-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/512dddabe1408ac23a6c65891cc89f5a/transformed/lifecycle-livedata-core-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/f2d682b0e7bce19733757aa5323cb56a/transformed/lifecycle-livedata-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/f2d682b0e7bce19733757aa5323cb56a/transformed/lifecycle-livedata-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/8f99eca147a811c8455705bf51a8554e/transformed/lifecycle-viewmodel-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/8f99eca147a811c8455705bf51a8554e/transformed/lifecycle-viewmodel-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/3915c8e4a54f1361a4b50ccbe6389f80/transformed/lifecycle-runtime-2.6.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/3915c8e4a54f1361a4b50ccbe6389f80/transformed/lifecycle-runtime-2.6.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/ca2fbd0cdb548ba42b2987cfe6b62fd5/transformed/jetified-lifecycle-viewmodel-savedstate-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/ca2fbd0cdb548ba42b2987cfe6b62fd5/transformed/jetified-lifecycle-viewmodel-savedstate-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core-ktx:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/54e49dcc46116ffb12528647f78cfe20/transformed/jetified-core-ktx-1.9.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/54e49dcc46116ffb12528647f78cfe20/transformed/jetified-core-ktx-1.9.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/ce9344e2943187a32a45450a6c7edaab/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/ce9344e2943187a32a45450a6c7edaab/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] /home/chinmay/.gradle/caches/8.13/transforms/ebd2aa0318f345c7d6dfc3a69afbf193/transformed/recyclerview-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.recyclerview:recyclerview:1.1.0] /home/chinmay/.gradle/caches/8.13/transforms/ebd2aa0318f345c7d6dfc3a69afbf193/transformed/recyclerview-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.customview:customview:1.1.0] /home/chinmay/.gradle/caches/8.13/transforms/7baa3aec0124e9265345b77b09d593f9/transformed/customview-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.customview:customview:1.1.0] /home/chinmay/.gradle/caches/8.13/transforms/7baa3aec0124e9265345b77b09d593f9/transformed/customview-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/4393d66053a2d88a53d125480d5b43d7/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/4393d66053a2d88a53d125480d5b43d7/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cardview:cardview:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/b8b6d42c6730402ebe1ed69b252eb7e4/transformed/cardview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cardview:cardview:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/b8b6d42c6730402ebe1ed69b252eb7e4/transformed/cardview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/chinmay/.gradle/caches/8.13/transforms/97be29755e6b940ef3dec554e527f2c8/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/chinmay/.gradle/caches/8.13/transforms/97be29755e6b940ef3dec554e527f2c8/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/chinmay/.gradle/caches/8.13/transforms/67b5f746dc5ca3f37a0531f2211c36b4/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/chinmay/.gradle/caches/8.13/transforms/67b5f746dc5ca3f37a0531f2211c36b4/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.tracing:tracing:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/b65b8f856d20f8fcb1147da66bb73469/transformed/jetified-tracing-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.tracing:tracing:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/b65b8f856d20f8fcb1147da66bb73469/transformed/jetified-tracing-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.android.datatransport:transport-api:2.2.1] /home/chinmay/.gradle/caches/8.13/transforms/cbe1740747175cf00e33e7a1923bfc74/transformed/jetified-transport-api-2.2.1/AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.android.datatransport:transport-api:2.2.1] /home/chinmay/.gradle/caches/8.13/transforms/cbe1740747175cf00e33e7a1923bfc74/transformed/jetified-transport-api-2.2.1/AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.firebase:firebase-components:16.1.0] /home/chinmay/.gradle/caches/8.13/transforms/1fcff35c608481d21a3ebd732493cdaf/transformed/jetified-firebase-components-16.1.0/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-components:16.1.0] /home/chinmay/.gradle/caches/8.13/transforms/1fcff35c608481d21a3ebd732493cdaf/transformed/jetified-firebase-components-16.1.0/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-encoders-json:17.1.0] /home/chinmay/.gradle/caches/8.13/transforms/da671999a8888e82e2343f99bb813a4d/transformed/jetified-firebase-encoders-json-17.1.0/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-encoders-json:17.1.0] /home/chinmay/.gradle/caches/8.13/transforms/da671999a8888e82e2343f99bb813a4d/transformed/jetified-firebase-encoders-json-17.1.0/AndroidManifest.xml:19:5-21:41
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/fd03f2aa5276cf78db053a07078f9689/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/fd03f2aa5276cf78db053a07078f9689/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /home/chinmay/.gradle/caches/8.13/transforms/a04584770a49cc02449dadedd502c584/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /home/chinmay/.gradle/caches/8.13/transforms/a04584770a49cc02449dadedd502c584/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/97069dfc2f9675b7bd2ab4490ce44068/transformed/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/97069dfc2f9675b7bd2ab4490ce44068/transformed/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/119e44b14be8f134ca7864e03b684282/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/119e44b14be8f134ca7864e03b684282/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/3420ee9bcc985541a2cc9e76873321db/transformed/print-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/3420ee9bcc985541a2cc9e76873321db/transformed/print-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.exifinterface:exifinterface:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/efcb2b834a6221aaf5cf8cfbf0e75e4a/transformed/exifinterface-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.exifinterface:exifinterface:1.0.0] /home/chinmay/.gradle/caches/8.13/transforms/efcb2b834a6221aaf5cf8cfbf0e75e4a/transformed/exifinterface-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/76d61942979747a03778cc8f6ce979ac/transformed/jetified-annotation-experimental-1.3.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/76d61942979747a03778cc8f6ce979ac/transformed/jetified-annotation-experimental-1.3.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.odml:image:1.0.0-beta1] /home/chinmay/.gradle/caches/8.13/transforms/62ba8ae4b05e8a88c44533abfe1a7489/transformed/jetified-image-1.0.0-beta1/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.odml:image:1.0.0-beta1] /home/chinmay/.gradle/caches/8.13/transforms/62ba8ae4b05e8a88c44533abfe1a7489/transformed/jetified-image-1.0.0-beta1/AndroidManifest.xml:5:5-44
+	android:targetSdkVersion
+		INJECTED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/chinmay/workspace/usb_cam_app_v4/uvc_cam_app/app/src/main/AndroidManifest.xml
+service#com.google.mlkit.common.internal.MlKitComponentDiscoveryService
+ADDED from [com.google.android.gms:play-services-mlkit-text-recognition-common:19.0.0] /home/chinmay/.gradle/caches/8.13/transforms/08fe52293ac6f16df53342f051e90efd/transformed/jetified-play-services-mlkit-text-recognition-common-19.0.0/AndroidManifest.xml:9:9-15:19
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/chinmay/.gradle/caches/8.13/transforms/da9f22d6009a2c6e895681e7617279e4/transformed/jetified-vision-common-17.3.0/AndroidManifest.xml:9:9-15:19
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/chinmay/.gradle/caches/8.13/transforms/da9f22d6009a2c6e895681e7617279e4/transformed/jetified-vision-common-17.3.0/AndroidManifest.xml:9:9-15:19
+MERGED from [com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:15:9-23:19
+MERGED from [com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:15:9-23:19
+	android:exported
+		ADDED from [com.google.android.gms:play-services-mlkit-text-recognition-common:19.0.0] /home/chinmay/.gradle/caches/8.13/transforms/08fe52293ac6f16df53342f051e90efd/transformed/jetified-play-services-mlkit-text-recognition-common-19.0.0/AndroidManifest.xml:11:13-37
+	tools:targetApi
+		ADDED from [com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:19:13-32
+	android:directBootAware
+		ADDED from [com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:17:13-43
+	android:name
+		ADDED from [com.google.android.gms:play-services-mlkit-text-recognition-common:19.0.0] /home/chinmay/.gradle/caches/8.13/transforms/08fe52293ac6f16df53342f051e90efd/transformed/jetified-play-services-mlkit-text-recognition-common-19.0.0/AndroidManifest.xml:10:13-91
+meta-data#com.google.firebase.components:com.google.mlkit.vision.text.internal.TextRegistrar
+ADDED from [com.google.android.gms:play-services-mlkit-text-recognition-common:19.0.0] /home/chinmay/.gradle/caches/8.13/transforms/08fe52293ac6f16df53342f051e90efd/transformed/jetified-play-services-mlkit-text-recognition-common-19.0.0/AndroidManifest.xml:12:13-14:85
+	android:value
+		ADDED from [com.google.android.gms:play-services-mlkit-text-recognition-common:19.0.0] /home/chinmay/.gradle/caches/8.13/transforms/08fe52293ac6f16df53342f051e90efd/transformed/jetified-play-services-mlkit-text-recognition-common-19.0.0/AndroidManifest.xml:14:17-82
+	android:name
+		ADDED from [com.google.android.gms:play-services-mlkit-text-recognition-common:19.0.0] /home/chinmay/.gradle/caches/8.13/transforms/08fe52293ac6f16df53342f051e90efd/transformed/jetified-play-services-mlkit-text-recognition-common-19.0.0/AndroidManifest.xml:13:17-114
+meta-data#com.google.firebase.components:com.google.mlkit.vision.common.internal.VisionCommonRegistrar
+ADDED from [com.google.mlkit:vision-common:17.3.0] /home/chinmay/.gradle/caches/8.13/transforms/da9f22d6009a2c6e895681e7617279e4/transformed/jetified-vision-common-17.3.0/AndroidManifest.xml:12:13-14:85
+	android:value
+		ADDED from [com.google.mlkit:vision-common:17.3.0] /home/chinmay/.gradle/caches/8.13/transforms/da9f22d6009a2c6e895681e7617279e4/transformed/jetified-vision-common-17.3.0/AndroidManifest.xml:14:17-82
+	android:name
+		ADDED from [com.google.mlkit:vision-common:17.3.0] /home/chinmay/.gradle/caches/8.13/transforms/da9f22d6009a2c6e895681e7617279e4/transformed/jetified-vision-common-17.3.0/AndroidManifest.xml:13:17-124
+provider#com.google.mlkit.common.internal.MlKitInitProvider
+ADDED from [com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:9:9-13:38
+	android:authorities
+		ADDED from [com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:11:13-69
+	android:exported
+		ADDED from [com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:12:13-37
+	android:initOrder
+		ADDED from [com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:13:13-35
+	android:name
+		ADDED from [com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:10:13-78
+meta-data#com.google.firebase.components:com.google.mlkit.common.internal.CommonComponentRegistrar
+ADDED from [com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:20:13-22:85
+	android:value
+		ADDED from [com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:22:17-82
+	android:name
+		ADDED from [com.google.mlkit:common:18.8.0] /home/chinmay/.gradle/caches/8.13/transforms/601335e60d4f8779dda34cfe72c85011/transformed/jetified-common-18.8.0/AndroidManifest.xml:21:17-120
+activity#com.google.android.gms.common.api.GoogleApiActivity
+ADDED from [com.google.android.gms:play-services-base:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/600e89147b3cc24887c010186ccd5507/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:20:9-22:45
+	android:exported
+		ADDED from [com.google.android.gms:play-services-base:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/600e89147b3cc24887c010186ccd5507/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:22:19-43
+	android:theme
+		ADDED from [com.google.android.gms:play-services-base:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/600e89147b3cc24887c010186ccd5507/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:21:19-78
+	android:name
+		ADDED from [com.google.android.gms:play-services-base:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/600e89147b3cc24887c010186ccd5507/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:20:19-85
+meta-data#com.google.android.gms.version
+ADDED from [com.google.android.gms:play-services-basement:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/dbba1e2be1a4206a77074b6b73ab091b/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:21:9-23:69
+	android:value
+		ADDED from [com.google.android.gms:play-services-basement:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/dbba1e2be1a4206a77074b6b73ab091b/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:23:13-66
+	android:name
+		ADDED from [com.google.android.gms:play-services-basement:18.1.0] /home/chinmay/.gradle/caches/8.13/transforms/dbba1e2be1a4206a77074b6b73ab091b/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:22:13-58
+provider#androidx.startup.InitializationProvider
+ADDED from [androidx.emoji2:emoji2:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/e6824132ad21a51f5bd68e19997dca65/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/9847b446801a5990c766dd1de70e77c0/transformed/jetified-lifecycle-process-2.6.1/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/9847b446801a5990c766dd1de70e77c0/transformed/jetified-lifecycle-process-2.6.1/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/chinmay/.gradle/caches/8.13/transforms/67b5f746dc5ca3f37a0531f2211c36b4/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/chinmay/.gradle/caches/8.13/transforms/67b5f746dc5ca3f37a0531f2211c36b4/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+	tools:node
+		ADDED from [androidx.emoji2:emoji2:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/e6824132ad21a51f5bd68e19997dca65/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:28:13-31
+	android:authorities
+		ADDED from [androidx.emoji2:emoji2:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/e6824132ad21a51f5bd68e19997dca65/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:26:13-68
+	android:exported
+		ADDED from [androidx.emoji2:emoji2:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/e6824132ad21a51f5bd68e19997dca65/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/e6824132ad21a51f5bd68e19997dca65/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:25:13-67
+meta-data#androidx.emoji2.text.EmojiCompatInitializer
+ADDED from [androidx.emoji2:emoji2:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/e6824132ad21a51f5bd68e19997dca65/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.emoji2:emoji2:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/e6824132ad21a51f5bd68e19997dca65/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.2.0] /home/chinmay/.gradle/caches/8.13/transforms/e6824132ad21a51f5bd68e19997dca65/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:30:17-75
+meta-data#androidx.lifecycle.ProcessLifecycleInitializer
+ADDED from [androidx.lifecycle:lifecycle-process:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/9847b446801a5990c766dd1de70e77c0/transformed/jetified-lifecycle-process-2.6.1/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.lifecycle:lifecycle-process:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/9847b446801a5990c766dd1de70e77c0/transformed/jetified-lifecycle-process-2.6.1/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.6.1] /home/chinmay/.gradle/caches/8.13/transforms/9847b446801a5990c766dd1de70e77c0/transformed/jetified-lifecycle-process-2.6.1/AndroidManifest.xml:30:17-78
+permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:23:9-81
+permission#com.minimal.uvccamera.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:23:9-81
+uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:26:22-94
+uses-permission#com.minimal.uvccamera.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.9.0] /home/chinmay/.gradle/caches/8.13/transforms/00eeb73d329f60914ee7cf1a9183d8d3/transformed/core-1.9.0/AndroidManifest.xml:26:22-94
+meta-data#androidx.profileinstaller.ProfileInstallerInitializer
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:30:17-85
+receiver#androidx.profileinstaller.ProfileInstallReceiver
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:34:9-52:20
+	android:enabled
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:37:13-35
+	android:exported
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:38:13-36
+	android:permission
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:39:13-57
+	android:directBootAware
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:36:13-44
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:35:13-76
+intent-filter#action:name:androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:40:13-42:29
+action#androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:41:17-91
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:41:25-88
+intent-filter#action:name:androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:43:13-45:29
+action#androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:44:17-85
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:44:25-82
+intent-filter#action:name:androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:46:13-48:29
+action#androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:47:17-88
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:47:25-85
+intent-filter#action:name:androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:49:13-51:29
+action#androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:50:17-95
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /home/chinmay/.gradle/caches/8.13/transforms/f31e9d1da53ef96c37d73819271a7b63/transformed/jetified-profileinstaller-1.3.0/AndroidManifest.xml:50:25-92
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:25:5-79
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:22:5-79
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:22:5-79
+	android:name
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:25:22-76
+uses-permission#android.permission.INTERNET
+ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:26:5-67
+	android:name
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:26:22-64
+service#com.google.android.datatransport.runtime.backends.TransportBackendDiscovery
+ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:29:9-35:19
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:36:9-38:40
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:36:9-38:40
+	android:exported
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:31:13-37
+	android:name
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:30:13-103
+meta-data#backend:com.google.android.datatransport.cct.CctBackendFactory
+ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:32:13-34:39
+	android:value
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:34:17-36
+	android:name
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/chinmay/.gradle/caches/8.13/transforms/55289e83f1a125e1d57723ef83fa40c1/transformed/jetified-transport-backend-cct-2.3.3/AndroidManifest.xml:33:17-94
+service#com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService
+ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:26:9-30:19
+	android:exported
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:28:13-37
+	android:permission
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:29:13-69
+	android:name
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:27:13-117
+receiver#com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver
+ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:32:9-34:40
+	android:exported
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:34:13-37
+	android:name
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/chinmay/.gradle/caches/8.13/transforms/b847fffca9bc620050c139515189b470/transformed/jetified-transport-runtime-2.2.6/AndroidManifest.xml:33:13-132
